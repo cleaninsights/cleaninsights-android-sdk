@@ -13,8 +13,8 @@ public class ConsentUI {
     public void showConsentDialog (Context context)
     {
         new SweetAlertDialog(context)
-                .setTitleText("Here's a message!")
-                .setContentText("It's pretty, isn't it?")
+                .setTitleText("Clean Insights")
+                .setContentText("Are you ready to get measured up?")
                 .show();
     }
 }

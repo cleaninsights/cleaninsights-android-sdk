@@ -18,12 +18,12 @@ public class DemoApp extends PiwikApplication {
 
     @Override
     public String getTrackerUrl() {
-        return "http://demo.piwik.org/";
+        return "http://nathanfreitas.piwikpro.com/";
     }
 
     @Override
     public Integer getSiteId() {
-        return 53;
+        return 1;
     }
 
     @Override
@@ -32,30 +32,12 @@ public class DemoApp extends PiwikApplication {
         initCleanInsights();
     }
 
-
     private void initCleanInsights() {
 
         //First init CI
-        CIManager.getInstance(this);
+        CIManager cim = CIManager.getInstance(this);
+        cim.initPwiki(this);
 
-        //Then init Piwik
-
-        // Print debug output when working on an app.
-        Timber.plant(new Timber.DebugTree());
-
-        // When working on an app we don't want to skew tracking results.
-        getPiwik().setDryRun(BuildConfig.DEBUG);
-
-        // If you want to set a specific userID other than the random UUID token, do it NOW to ensure all future actions use that token.
-        // Changing it later will track new events as belonging to a different user.
-        // String userEmail = ....preferences....getString
-        // getTracker().setUserId(userEmail);
-
-        // Track this app install, this will only trigger once per app version.
-        // i.e. "http://com.piwik.demo:1/185DECB5CFE28FDB2F45887022D668B4"
-        TrackHelper.track().download().identifier(DownloadTracker.Extra.APK_CHECKSUM).with(getTracker());
-        // Alternative:
-        // i.e. "http://com.piwik.demo:1/com.android.vending"
-        // getTracker().download();
+        getTracker().setApplicationDomain("nathan.freitas.net");
     }
 }

@@ -21,7 +21,6 @@ import org.piwik.sdk.TrackHelper;
 
 import timber.log.Timber;
 
-
 public class SettingsActivity extends Activity {
 
     private void refreshUI(final Activity settingsActivity) {

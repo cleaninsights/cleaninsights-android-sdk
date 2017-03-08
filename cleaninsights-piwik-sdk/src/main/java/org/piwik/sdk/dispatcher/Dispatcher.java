@@ -51,6 +51,7 @@ import timber.log.Timber;
  */
 @SuppressWarnings("deprecation")
 public class Dispatcher {
+
     private static final String LOGGER_TAG = Piwik.LOGGER_PREFIX + "Dispatcher";
     private final BlockingQueue<String> mDispatchQueue = new LinkedBlockingQueue<>();
     private final Object mThreadControl = new Object();
