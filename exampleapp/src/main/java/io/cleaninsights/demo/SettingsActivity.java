@@ -5,7 +5,7 @@
  * @license https://github.com/piwik/piwik-sdk-android/blob/master/LICENSE BSD-3 Clause
  */
 
-package com.piwik.demo;
+package io.cleaninsights.demo;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -26,7 +26,7 @@ public class SettingsActivity extends Activity {
 
     private void refreshUI(final Activity settingsActivity) {
         // auto track button
-        Button button = (Button) findViewById(R.id.bindtoapp);
+        Button button = (Button) findViewById(com.piwik.demo.R.id.bindtoapp);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -35,7 +35,7 @@ public class SettingsActivity extends Activity {
         });
 
         // Dry run
-        CheckBox dryRun = (CheckBox) findViewById(R.id.dryRunCheckbox);
+        CheckBox dryRun = (CheckBox) findViewById(com.piwik.demo.R.id.dryRunCheckbox);
         dryRun.setChecked(((PiwikApplication) getApplication()).getPiwik().isDryRun());
         dryRun.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,7 +45,7 @@ public class SettingsActivity extends Activity {
         });
 
         // out out
-        CheckBox optOut = (CheckBox) findViewById(R.id.optOutCheckbox);
+        CheckBox optOut = (CheckBox) findViewById(com.piwik.demo.R.id.optOutCheckbox);
         optOut.setChecked(((PiwikApplication) getApplication()).getPiwik().isOptOut());
         optOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +55,7 @@ public class SettingsActivity extends Activity {
         });
 
         // dispatch interval
-        EditText input = (EditText) findViewById(R.id.dispatchIntervallInput);
+        EditText input = (EditText) findViewById(com.piwik.demo.R.id.dispatchIntervallInput);
         input.setText(Long.toString(
                 ((PiwikApplication) getApplication()).getTracker().getDispatchInterval()
         ));
@@ -84,7 +84,7 @@ public class SettingsActivity extends Activity {
         );
 
         //session Timeout Input
-        input = (EditText) findViewById(R.id.sessionTimeoutInput);
+        input = (EditText) findViewById(com.piwik.demo.R.id.sessionTimeoutInput);
         input.setText(Long.toString(
                 (((PiwikApplication) getApplication()).getTracker().getSessionTimeout() / 60000)
         ));
@@ -98,7 +98,7 @@ public class SettingsActivity extends Activity {
                             ((PiwikApplication) getApplication()).getTracker()
                                     .setSessionTimeout(timeoutMin * 60);
                         } catch (NumberFormatException e) {
-                            ((EditText) settingsActivity.findViewById(R.id.sessionTimeoutInput)).setText("30");
+                            ((EditText) settingsActivity.findViewById(com.piwik.demo.R.id.sessionTimeoutInput)).setText("30");
                             Timber.d("not a number: %s", charSequence.toString());
                         }
                     }
@@ -119,7 +119,7 @@ public class SettingsActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(com.piwik.demo.R.layout.activity_settings);
         refreshUI(this);
     }
 

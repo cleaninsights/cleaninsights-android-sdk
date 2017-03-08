@@ -5,7 +5,7 @@
  * @license https://github.com/piwik/piwik-sdk-android/blob/master/LICENSE BSD-3 Clause
  */
 
-package com.piwik.demo;
+package io.cleaninsights.demo;
 
 import android.content.Intent;
 import android.os.Bundle;
