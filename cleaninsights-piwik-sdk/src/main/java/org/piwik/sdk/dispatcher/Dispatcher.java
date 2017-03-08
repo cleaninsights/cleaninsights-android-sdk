@@ -7,14 +7,17 @@
 
 package org.piwik.sdk.dispatcher;
 
+import android.content.Intent;
 import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
 import org.json.JSONObject;
 import org.piwik.sdk.Piwik;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -30,6 +33,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import info.guardianproject.netcipher.client.StrongBuilder;
+import info.guardianproject.netcipher.client.StrongConnectionBuilder;
+import io.cleaninsights.sdk.CIManager;
 import timber.log.Timber;
 
 /**
@@ -179,7 +185,7 @@ public class Dispatcher {
     };
 
     @VisibleForTesting
-    public boolean dispatch(@NonNull Packet packet) {
+    public boolean dispatch(@NonNull final Packet packet) {
         // Some error checking
         if (packet.getTargetURL() == null)
             return false;
@@ -196,27 +202,63 @@ public class Dispatcher {
             mDryRunOutput.clear();
 
         try {
-            HttpURLConnection urlConnection = (HttpURLConnection) packet.getTargetURL().openConnection();
-            urlConnection.setConnectTimeout(mTimeOut);
-            urlConnection.setReadTimeout(mTimeOut);
 
-            // IF there is json data we want to do a post
-            if (packet.getJSONObject() != null) {
-                // POST
-                urlConnection.setDoOutput(true); // Forces post
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.setRequestProperty("charset", "utf-8");
+            CIManager.getStrongBuilder(mPiwik.getContext(),packet.getTargetURL(),new StrongBuilder.Callback<HttpURLConnection>() {
 
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8"));
-                writer.write(packet.getJSONObject().toString());
-                writer.flush();
-                writer.close();
-            } else {
-                // GET
-                urlConnection.setDoOutput(false); // Defaults to false, but for readability
-            }
+                @Override
+                public void onConnected(HttpURLConnection urlConnection) {
 
-            int statusCode = urlConnection.getResponseCode();
+                    urlConnection.setConnectTimeout(mTimeOut);
+                    urlConnection.setReadTimeout(mTimeOut);
+
+                    try {
+                        // IF there is json data we want to do a post
+                        if (packet.getJSONObject() != null) {
+                            // POST
+                            urlConnection.setDoOutput(true); // Forces post
+                            urlConnection.setRequestProperty("Content-Type", "application/json");
+                            urlConnection.setRequestProperty("charset", "utf-8");
+
+                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8"));
+                            writer.write(packet.getJSONObject().toString());
+                            writer.flush();
+                            writer.close();
+                        } else {
+                            // GET
+                            urlConnection.setDoOutput(false); // Defaults to false, but for readability
+                        }
+
+                        int statusCode = urlConnection.getResponseCode();
+                        Timber.tag(LOGGER_TAG).d("status code %s", statusCode);
+
+                    }
+                    catch (IOException e)
+                    {
+                        Timber.tag(LOGGER_TAG).w(e, "NetCipher Cannot send request");
+                    }
+                }
+
+                @Override
+                public void onConnectionException(Exception e) {
+                    Timber.tag(LOGGER_TAG).e(e, "NetCipher Connection Exception");
+
+                }
+
+                @Override
+                public void onTimeout() {
+                    Timber.tag(LOGGER_TAG).w("NetCipher Timeout");
+
+
+                }
+
+                @Override
+                public void onInvalid() {
+                    Timber.tag(LOGGER_TAG).w("NetCipher invalid");
+
+                }
+            });
+
+            int statusCode = HttpURLConnection.HTTP_OK;//urlConnection.getResponseCode();
             Timber.tag(LOGGER_TAG).d("status code %s", statusCode);
             return statusCode == HttpURLConnection.HTTP_NO_CONTENT || statusCode == HttpURLConnection.HTTP_OK;
         } catch (Exception e) {
