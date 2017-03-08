@@ -18,6 +18,23 @@ public class CIManager {
 
     public final static String TAG = "CleanInsights";
 
+    private static CIManager mInstance = null;
+
+    private CIManager (Context context)
+    {
+        init(context);
+    }
+
+    public synchronized static CIManager getInstance (Context context)
+    {
+        if (mInstance == null)
+        {
+            mInstance = new CIManager(context);
+        }
+
+        return mInstance;
+    }
+
     public void init (Context context)
     {
         initNetCipher (context);

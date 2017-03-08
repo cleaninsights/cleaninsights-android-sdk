@@ -25,6 +25,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.cleaninsights.sdk.consent.ConsentUI;
 
 
 public class DemoActivity extends ActionBarActivity {
@@ -37,6 +38,9 @@ public class DemoActivity extends ActionBarActivity {
         setContentView(R.layout.activity_demo);
         ButterKnife.bind(this);
         items = new EcommerceItems();
+
+        new ConsentUI().showConsentDialog(this);
+
     }
 
     private Tracker getTracker() {

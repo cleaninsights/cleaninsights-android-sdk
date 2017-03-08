@@ -11,6 +11,7 @@ import org.piwik.sdk.DownloadTracker;
 import org.piwik.sdk.PiwikApplication;
 import org.piwik.sdk.TrackHelper;
 
+import io.cleaninsights.sdk.CIManager;
 import timber.log.Timber;
 
 public class DemoApp extends PiwikApplication {
@@ -28,11 +29,17 @@ public class DemoApp extends PiwikApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        initPiwik();
+        initCleanInsights();
     }
 
 
-    private void initPiwik() {
+    private void initCleanInsights() {
+
+        //First init CI
+        CIManager.getInstance(this);
+
+        //Then init Piwik
+
         // Print debug output when working on an app.
         Timber.plant(new Timber.DebugTree());
 
