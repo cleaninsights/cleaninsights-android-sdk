@@ -4,7 +4,7 @@
  * @link https://github.com/piwik/piwik-android-sdk
  * @license https://github.com/piwik/piwik-sdk-android/blob/master/LICENSE BSD-3 Clause
  */
-package org.piwik.sdk.tools;
+package io.cleaninsights.sdk.tools;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -24,7 +24,13 @@ import timber.log.Timber;
  * Helper class to gain information about the device we are running on
  */
 public class DeviceHelper {
+
     private static final String LOGGER_TAG = Piwik.LOGGER_PREFIX + "DeviceHelper";
+
+    public final static String CI_USER_AGENT = "Mozilla/5.0 (Linux; Android; Clean Insights)";
+
+    public final static int DEFAULT_WIDTH = 320;
+    public final static int DEFAULT_HEIGHT = 480;
 
     /**
      * Returns user language
@@ -50,7 +56,8 @@ public class DeviceHelper {
      * @return well formatted user agent
      */
     public static String getUserAgent() {
-        return System.getProperty("http.agent");
+       // return System.getProperty("http.agent");
+        return CI_USER_AGENT;
     }
 
     /**
@@ -62,8 +69,12 @@ public class DeviceHelper {
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static int[] getResolution(Context context) {
-        int width = -1, height = -1;
 
+        int width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT;
+
+        //let's remove specifics about display for now! maybe we can do something DP here?
+
+        /**
         Display display;
         try {
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -98,7 +109,7 @@ public class DeviceHelper {
             display.getMetrics(dm);
             width = dm.widthPixels;
             height = dm.heightPixels;
-        }
+        }**/
 
         return new int[]{width, height};
     }

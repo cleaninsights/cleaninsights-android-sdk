@@ -51,7 +51,7 @@ public class Piwik {
      */
     @Deprecated
     public synchronized Tracker newTracker(@NonNull String trackerUrl, int siteId, String authToken) throws MalformedURLException {
-        return new Tracker(trackerUrl, siteId, authToken, this);
+        return new CleanInsightsTracker(trackerUrl, siteId, authToken, this);
     }
 
     /**
@@ -61,7 +61,7 @@ public class Piwik {
      * @throws MalformedURLException
      */
     public synchronized Tracker newTracker(@NonNull String trackerUrl, int siteId) throws MalformedURLException {
-        return new Tracker(trackerUrl, siteId, null, this);
+        return new CleanInsightsTracker(trackerUrl, siteId, null, this);
     }
 
     /**
