@@ -18,7 +18,7 @@ public class DemoApp extends PiwikApplication {
 
     @Override
     public String getTrackerUrl() {
-        return "http://nathanfreitas.piwikpro.com/";
+        return "https://demo.cleaninsights.io";
     }
 
     @Override
@@ -38,6 +38,6 @@ public class DemoApp extends PiwikApplication {
         CIManager cim = CIManager.getInstance(this);
         cim.initPwiki(this);
 
-        getTracker().setApplicationDomain("nathan.freitas.net");
+        getTracker().setApplicationDomain("demo.cleaninsights.io");
     }
 }
