@@ -25,7 +25,7 @@ public class DemoApp extends PiwikApplication {
     public String getTrackerUrlCertificatePin ()
     {
         //generate your own using this tool: https://github.com/scottyab/ssl-pin-generator
-        return "sha256/qi0sZ8zRLd6atrclZ/ShDXdg7v0==";
+        return "sha256/ZG+5y3w2mxstotmn15d9tnJtwss591+L6EH/yJMF41I=";
     }
 
     @Override

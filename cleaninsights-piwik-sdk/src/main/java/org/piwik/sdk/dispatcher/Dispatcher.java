@@ -66,7 +66,7 @@ public class Dispatcher {
     private static final String LOGGER_TAG = Piwik.LOGGER_PREFIX + "Dispatcher";
     private static final String DEFAULT_QUEUE_FILE = "dqf";
     private QueueFile mDispatchQueue = null;
-   // private final BlockingQueue<String> mDispatchQueue = new LinkedBlockingQueue<>();
+
     private final Object mThreadControl = new Object();
     private final Semaphore mSleepToken = new Semaphore(0);
     private final Piwik mPiwik;
