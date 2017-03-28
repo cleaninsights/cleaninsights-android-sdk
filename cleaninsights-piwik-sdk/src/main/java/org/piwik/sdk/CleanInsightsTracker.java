@@ -16,9 +16,9 @@ public class CleanInsightsTracker extends Tracker {
     private static final String DEFAULT_UNKNOWN_VALUE = "unknown";
     private static final String DEFAULT_TRUE_VALUE = "1";
 
-    protected CleanInsightsTracker(@NonNull final String url, int siteId, String authToken, @NonNull Piwik piwik) throws MalformedURLException {
+    protected CleanInsightsTracker(@NonNull final String url, int siteId, String authToken, String certPin, @NonNull Piwik piwik) throws MalformedURLException {
 
-        super (url, siteId, authToken, piwik);
+        super (url, siteId, authToken, certPin, piwik);
 
         String userId = getSharedPreferences().getString(PREF_KEY_TRACKER_USERID, null);
         getSharedPreferences().edit().putString(PREF_KEY_TRACKER_USERID, userId).apply();

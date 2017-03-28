@@ -11,9 +11,6 @@ import org.piwik.sdk.TrackHelper;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import info.guardianproject.netcipher.client.StrongBuilder;
-import info.guardianproject.netcipher.client.StrongConnectionBuilder;
-import info.guardianproject.netcipher.proxy.OrbotHelper;
 import timber.log.Timber;
 
 /**
@@ -47,11 +44,11 @@ public class CIManager {
 
     private void initNetCipher (Context context)
     {
-        OrbotHelper.get(context).init();
-
+       // OrbotHelper.get(context).init();
 
     }
 
+    /**
     public static void getStrongBuilder (Context context, URL url, StrongBuilder.Callback callback)
     {
         try {
@@ -65,7 +62,7 @@ public class CIManager {
                     "Exception loading SO questions", e);
 
         }
-    }
+    }**/
 
     public void initPwiki (PiwikApplication app)
     {

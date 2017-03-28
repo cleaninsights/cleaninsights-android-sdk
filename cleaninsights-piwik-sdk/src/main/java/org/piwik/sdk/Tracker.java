@@ -58,6 +58,7 @@ public class Tracker {
      */
     private final int mSiteId;
     private final String mAuthToken;
+    private final String mCertPin;
     private final Object mSessionLock = new Object();
     private final CustomVariables mVisitCustomVariable = new CustomVariables();
     private final Dispatcher mDispatcher;
@@ -78,7 +79,7 @@ public class Tracker {
      * @param piwik     piwik object used to gain access to application params such as name, resolution or lang
      * @throws MalformedURLException
      */
-    protected Tracker(@NonNull final String url, int siteId, String authToken, @NonNull Piwik piwik) throws MalformedURLException {
+    protected Tracker(@NonNull final String url, int siteId, String authToken, String certPin, @NonNull Piwik piwik) throws MalformedURLException {
 
         String checkUrl = url;
         if (checkUrl.endsWith("piwik.php") || checkUrl.endsWith("piwik-proxy.php")) {
@@ -92,8 +93,9 @@ public class Tracker {
         mPiwik = piwik;
         mSiteId = siteId;
         mAuthToken = authToken;
+        mCertPin = certPin;
 
-        mDispatcher = new Dispatcher(mPiwik, mApiUrl, authToken);
+        mDispatcher = new Dispatcher(mPiwik, mApiUrl, authToken, certPin);
 
         String userId = getSharedPreferences().getString(PREF_KEY_TRACKER_USERID, null);
         if (userId == null) {
@@ -132,6 +134,8 @@ public class Tracker {
     protected int getSiteId() {
         return mSiteId;
     }
+
+    public String getCertificatePin () { return mCertPin; }
 
     /**
      * Piwik will use the content of this object to fill in missing values before any transmission.
@@ -387,7 +391,7 @@ public class Tracker {
 
         injectBaseParams(trackMe);
         String event = Dispatcher.urlEncodeUTF8(trackMe.toMap());
-        if (mPiwik.isOptOut()) {
+        if (mPiwik.isOptOut()) { //TODO we should check this optOut variable
             mLastEvent = event;
             Timber.tag(LOGGER_TAG).d("URL omitted due to opt out: %s", event);
         } else {

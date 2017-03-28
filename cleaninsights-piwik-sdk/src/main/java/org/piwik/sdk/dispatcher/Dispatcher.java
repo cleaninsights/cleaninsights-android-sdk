@@ -22,6 +22,7 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,9 +34,15 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-import info.guardianproject.netcipher.client.StrongBuilder;
-import info.guardianproject.netcipher.client.StrongConnectionBuilder;
+import javax.net.ssl.HttpsURLConnection;
+
 import io.cleaninsights.sdk.CIManager;
+import okhttp3.CertificatePinner;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 import timber.log.Timber;
 
 /**
@@ -59,6 +66,7 @@ public class Dispatcher {
     private final Piwik mPiwik;
     private final URL mApiUrl;
     private final String mAuthToken;
+    private final String mCertPin;
 
     private List<Packet> mDryRunOutput = Collections.synchronizedList(new ArrayList<Packet>());
     public static final int DEFAULT_CONNECTION_TIMEOUT = 5 * 1000;  // 5s
@@ -68,10 +76,11 @@ public class Dispatcher {
     public static final long DEFAULT_DISPATCH_INTERVAL = 120 * 1000; // 120s
     private volatile long mDispatchInterval = DEFAULT_DISPATCH_INTERVAL;
 
-    public Dispatcher(Piwik piwik, URL apiUrl, String authToken) {
+    public Dispatcher(Piwik piwik, URL apiUrl, String authToken, String certPin) {
         mPiwik = piwik;
         mApiUrl = apiUrl;
         mAuthToken = authToken;
+        mCertPin = certPin;
     }
 
     /**
@@ -204,63 +213,51 @@ public class Dispatcher {
 
         try {
 
-            CIManager.getStrongBuilder(mPiwik.getContext(),packet.getTargetURL(),new StrongBuilder.Callback<HttpURLConnection>() {
+            OkHttpClient client = null;
 
-                @Override
-                public void onConnected(HttpURLConnection urlConnection) {
+            if (mCertPin != null) {
+                CertificatePinner certificatePinner = new CertificatePinner.Builder()
+                        .add(packet.getTargetURL().getHost(), mCertPin)
+                        .build();
 
-                    urlConnection.setConnectTimeout(mTimeOut);
-                    urlConnection.setReadTimeout(mTimeOut);
+                    client = new OkHttpClient.Builder()
+                        .certificatePinner(certificatePinner)
+                        .build();
+            }
+            else
+            {
+                client = new OkHttpClient.Builder()
+                        .build();
+            }
 
-                    try {
-                        // IF there is json data we want to do a post
-                        if (packet.getJSONObject() != null) {
-                            // POST
-                            urlConnection.setDoOutput(true); // Forces post
-                            urlConnection.setRequestProperty("Content-Type", "application/json");
-                            urlConnection.setRequestProperty("charset", "utf-8");
+            Request request = null;
 
-                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(urlConnection.getOutputStream(), "UTF-8"));
-                            writer.write(packet.getJSONObject().toString());
-                            writer.flush();
-                            writer.close();
-                        } else {
-                            // GET
-                            urlConnection.setDoOutput(false); // Defaults to false, but for readability
-                        }
+            // IF there is json data we want to do a post
+            if (packet.getJSONObject() != null) {
 
-                        int statusCode = urlConnection.getResponseCode();
-                        Timber.tag(LOGGER_TAG).d("status code %s", statusCode);
-
-                    }
-                    catch (IOException e)
-                    {
-                        Timber.tag(LOGGER_TAG).w(e, "NetCipher Cannot send request");
-                    }
-                }
-
-                @Override
-                public void onConnectionException(Exception e) {
-                    Timber.tag(LOGGER_TAG).e(e, "NetCipher Connection Exception");
-
-                }
-
-                @Override
-                public void onTimeout() {
-                    Timber.tag(LOGGER_TAG).w("NetCipher Timeout");
+                MediaType JSON
+                        = MediaType.parse("application/json; charset=utf-8");
 
 
-                }
+                RequestBody body = RequestBody.create(JSON, packet.getJSONObject().toString());
+                request = new Request.Builder()
+                        .url(packet.getTargetURL())
+                        .post(body)
+                        .build();
 
-                @Override
-                public void onInvalid() {
-                    Timber.tag(LOGGER_TAG).w("NetCipher invalid");
+            } else {
+                // GET
+                request = new Request.Builder()
+                        .url(packet.getTargetURL())
+                        .build();
+            }
 
-                }
-            });
+            Response response = client.newCall(request).execute();
 
-            int statusCode = HttpURLConnection.HTTP_OK;//urlConnection.getResponseCode();
+            int statusCode = response.code();
             Timber.tag(LOGGER_TAG).d("status code %s", statusCode);
+
+
             return statusCode == HttpURLConnection.HTTP_NO_CONTENT || statusCode == HttpURLConnection.HTTP_OK;
         } catch (Exception e) {
             // Broad but an analytics app shouldn't impact it's host app.

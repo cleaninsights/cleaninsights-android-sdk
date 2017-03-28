@@ -22,6 +22,12 @@ public class DemoApp extends PiwikApplication {
     }
 
     @Override
+    public String getTrackerUrlCertificatePin ()
+    {
+        return "sha256/qi0sZ8zRLd6atrclZ/ShDXdg7v0==";
+    }
+
+    @Override
     public Integer getSiteId() {
         return 1;
     }

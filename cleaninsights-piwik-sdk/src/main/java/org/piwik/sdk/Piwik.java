@@ -50,8 +50,8 @@ public class Piwik {
      * @deprecated Use {@link #newTracker(String, int)} as there are security concerns over the authToken.
      */
     @Deprecated
-    public synchronized Tracker newTracker(@NonNull String trackerUrl, int siteId, String authToken) throws MalformedURLException {
-        return new CleanInsightsTracker(trackerUrl, siteId, authToken, this);
+    public synchronized Tracker newTracker(@NonNull String trackerUrl, int siteId, String authToken, String certPin) throws MalformedURLException {
+        return new CleanInsightsTracker(trackerUrl, siteId, authToken, certPin, this);
     }
 
     /**
@@ -61,7 +61,7 @@ public class Piwik {
      * @throws MalformedURLException
      */
     public synchronized Tracker newTracker(@NonNull String trackerUrl, int siteId) throws MalformedURLException {
-        return new CleanInsightsTracker(trackerUrl, siteId, null, this);
+        return new CleanInsightsTracker(trackerUrl, siteId, null, null, this);
     }
 
     /**

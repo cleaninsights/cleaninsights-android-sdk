@@ -27,7 +27,7 @@ public abstract class PiwikApplication extends Application {
     public synchronized Tracker getTracker() {
         if (mPiwikTracker == null) {
             try {
-                mPiwikTracker = getPiwik().newTracker(getTrackerUrl(), getSiteId());
+                mPiwikTracker = getPiwik().newTracker(getTrackerUrl(), getSiteId(), null, getTrackerUrlCertificatePin());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Tracker URL was malformed.");
@@ -45,6 +45,14 @@ public abstract class PiwikApplication extends Application {
      * The siteID you specified for this application in Piwik.
      */
     public abstract Integer getSiteId();
+
+    /**
+     * The certificate pin of the remote Pwiki server
+     */
+    public String getTrackerUrlCertificatePin ()
+    {
+        return null; //not required
+    }
 
 
     @Override
