@@ -36,7 +36,7 @@ dependencies {
 
 You can simply extend your application with a 
 [``CleanInsightsApplication``](https://github.com/piwik/piwik-sdk-android/blob/master/piwik-sdk/src/main/java/org/piwik/sdk/PiwikApplication.java) class.
-[This approach is used](https://github.com/cleaninsights/cleaninsights-android-sdk/blob/master/exampleapp/src/main/java/com/piwik/demo/DemoApp.java) in our demo app.
+[This approach is used](https://github.com/cleaninsights/cleaninsights-android-sdk/blob/master/exampleapp/src/main/java/io/cleaninsights/demo/DemoApp.java) in our demo app.
 
 #### Advanced
 
