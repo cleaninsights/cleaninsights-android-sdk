@@ -13,10 +13,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
+
+import com.squareup.tape2.QueueFile;
+
 import org.json.JSONObject;
 import org.piwik.sdk.Piwik;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
@@ -60,7 +64,9 @@ import timber.log.Timber;
 public class Dispatcher {
 
     private static final String LOGGER_TAG = Piwik.LOGGER_PREFIX + "Dispatcher";
-    private final BlockingQueue<String> mDispatchQueue = new LinkedBlockingQueue<>();
+    private static final String DEFAULT_QUEUE_FILE = "dqf";
+    private QueueFile mDispatchQueue = null;
+   // private final BlockingQueue<String> mDispatchQueue = new LinkedBlockingQueue<>();
     private final Object mThreadControl = new Object();
     private final Semaphore mSleepToken = new Semaphore(0);
     private final Piwik mPiwik;
@@ -81,6 +87,15 @@ public class Dispatcher {
         mApiUrl = apiUrl;
         mAuthToken = authToken;
         mCertPin = certPin;
+
+        try {
+            File fileQueue = new File(piwik.getContext().getCacheDir(), DEFAULT_QUEUE_FILE);
+            mDispatchQueue = new QueueFile.Builder(fileQueue).build();
+        }
+        catch (Exception ioe)
+        {
+            throw new RuntimeException("unable to create file queue");
+        }
     }
 
     /**
@@ -141,9 +156,17 @@ public class Dispatcher {
     }
 
     public void submit(String query) {
-        mDispatchQueue.add(query);
-        if (mDispatchInterval != -1)
-            launch();
+
+        try {
+            mDispatchQueue.add(query.getBytes());
+
+            if (mDispatchInterval != -1)
+                launch();
+        }
+        catch (IOException ioe)
+        {
+            Timber.tag(LOGGER_TAG).e("error storing query in dispatch",ioe);
+        }
     }
 
     private Runnable mLoop = new Runnable() {
@@ -160,7 +183,19 @@ public class Dispatcher {
 
                 int count = 0;
                 List<String> availableEvents = new ArrayList<>();
-                mDispatchQueue.drainTo(availableEvents);
+                //mDispatchQueue.drainTo(availableEvents);
+                for (byte[] event : mDispatchQueue)
+                {
+                    availableEvents.add(new String(event));
+
+                }
+
+                try { mDispatchQueue.clear();}
+                catch (IOException ioe)
+                {
+                    Timber.tag(LOGGER_TAG).e("Unable to clear queue");
+                }
+
                 Timber.tag(LOGGER_TAG).d("Drained %s events.", availableEvents.size());
                 TrackerBulkURLWrapper wrapper = new TrackerBulkURLWrapper(mApiUrl, availableEvents, mAuthToken);
                 Iterator<TrackerBulkURLWrapper.Page> pageIterator = wrapper.iterator();

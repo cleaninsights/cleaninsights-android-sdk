@@ -71,7 +71,7 @@ dependencies {
     compile 'cn.pedant.sweetalert:library:1.3'
 
     //SquareUp Tape library, for QueueFile
-    compile 'com.squareup:tape:1.2.3'
+    compile 'com.squareup.tape2:tape:2.0.0-SNAPSHOT'
 
     // Espresso
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.0')
