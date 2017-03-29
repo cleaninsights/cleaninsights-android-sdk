@@ -294,12 +294,15 @@ public class Tracker {
      * There parameters are only interesting for the very first query.
      */
     private void injectInitialParams(TrackMe trackMe) {
-        long firstVisitTime;
-        int visitCount;
-        long previousVisit;
+
+        //let's just make this useless for now
+        long firstVisitTime = new Date().getTime();
+        int visitCount = 1;
+        long previousVisit = new Date().getTime();
 
         // Protected against Trackers on other threads trying to do the same thing.
         // This works because they would use the same preference object.
+        /**
         synchronized (getSharedPreferences()) {
             visitCount = 1 + getSharedPreferences().getInt(PREF_KEY_TRACKER_VISITCOUNT, 0);
             getSharedPreferences().edit().putInt(PREF_KEY_TRACKER_VISITCOUNT, visitCount).apply();
@@ -317,6 +320,7 @@ public class Tracker {
             previousVisit = getSharedPreferences().getLong(PREF_KEY_TRACKER_PREVIOUSVISIT, -1);
             getSharedPreferences().edit().putLong(PREF_KEY_TRACKER_PREVIOUSVISIT, System.currentTimeMillis() / 1000).apply();
         }
+         **/
 
         // trySet because the developer could have modded these after creating the Tracker
         mDefaultTrackMe.trySet(QueryParams.FIRST_VISIT_TIMESTAMP, firstVisitTime);

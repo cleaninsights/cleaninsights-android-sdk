@@ -40,4 +40,10 @@ public class CleanInsightsTracker extends Tracker {
         getDefaultTrackMe().set(QueryParams.VISITOR_ID, makeRandomVisitorId());
     }
 
+    public static String makeRandomVisitorId() {
+        //return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 16);
+        return "ffffffffffffffff";// 16 digit hexadecimal
+
+    }
+
 }
