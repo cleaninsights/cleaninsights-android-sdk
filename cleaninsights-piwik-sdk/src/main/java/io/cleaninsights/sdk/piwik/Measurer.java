@@ -70,7 +70,7 @@ public class Measurer {
     private long mSessionStartTime;
 
     /**
-     * Use Piwik.newTracker() method to create new trackers
+     * Use Piwik.newMeasurer() method to create new trackers
      *
      * @param url       (required) Tracking HTTP API endpoint, for example, http://your-piwik-domain.tld/piwik.php
      * @param siteId    (required) id of site

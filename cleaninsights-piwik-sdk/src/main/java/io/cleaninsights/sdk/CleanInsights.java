@@ -74,10 +74,9 @@ public class CleanInsights {
         // String userEmail = ....preferences....getString
 
         // getMeasurer().setApplicationDomain();
-        app.getMeasurer().setVisitCustomVariable(0, "foo","blat");
-        app.getMeasurer().setVisitCustomVariable(1, "bar","blat");
-        app.getMeasurer().setUserId("anonymous");
-
+        //app.getMeasurer().setVisitCustomVariable(0, "foo","blat");
+        //app.getMeasurer().setVisitCustomVariable(1, "bar","blat");
+        //app.getMeasurer().setUserId("anonymous");
 
         // Track this app install, this will only trigger once per app version.
         // i.e. "http://com.piwik.demo:1/185DECB5CFE28FDB2F45887022D668B4"

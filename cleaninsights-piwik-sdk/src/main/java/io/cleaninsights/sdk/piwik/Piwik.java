@@ -15,7 +15,7 @@ import java.net.MalformedURLException;
 
 
 public class Piwik {
-    public static final String LOGGER_PREFIX = "PIWIK:";
+    public static final String LOGGER_PREFIX = "CLEANINSIGHTS:";
     public static final String PREFERENCE_FILE_NAME = "org.piwik.sdk";
     public static final String PREFERENCE_KEY_OPTOUT = "piwik.optout";
     private final Context mContext;
@@ -47,10 +47,10 @@ public class Piwik {
      * @param authToken  (optional) could be null or valid auth token.
      * @return Tracker object
      * @throws MalformedURLException
-     * @deprecated Use {@link #newTracker(String, int)} as there are security concerns over the authToken.
+     * @deprecated Use {@link #newMeasurer(String, int)} as there are security concerns over the authToken.
      */
     @Deprecated
-    public synchronized Measurer newTracker(@NonNull String trackerUrl, int siteId, String authToken, String certPin) throws MalformedURLException {
+    public synchronized Measurer newMeasurer(@NonNull String trackerUrl, int siteId, String authToken, String certPin) throws MalformedURLException {
         return new Measurer(trackerUrl, siteId, authToken, certPin, this);
     }
 
@@ -60,7 +60,7 @@ public class Piwik {
      * @return Tracker object
      * @throws MalformedURLException
      */
-    public synchronized Measurer newTracker(@NonNull String trackerUrl, int siteId) throws MalformedURLException {
+    public synchronized Measurer newMeasurer(@NonNull String trackerUrl, int siteId) throws MalformedURLException {
         return new Measurer(trackerUrl, siteId, null, null, this);
     }
 
