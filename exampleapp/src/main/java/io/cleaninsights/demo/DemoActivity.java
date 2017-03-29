@@ -8,13 +8,21 @@
 package io.cleaninsights.demo;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.andtinder.model.CardModel;
+import com.andtinder.model.Orientations;
+import com.andtinder.view.CardContainer;
+import com.andtinder.view.SimpleCardStackAdapter;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import io.cleaninsights.sdk.piwik.MeasureHelper;
 import io.cleaninsights.sdk.piwik.Measurer;
@@ -29,17 +37,56 @@ import io.cleaninsights.sdk.consent.ConsentUI;
 
 
 public class DemoActivity extends ActionBarActivity {
-    int cartItems = 0;
-    private EcommerceItems items;
+
+
+    private CardContainer mCardContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_demo);
-        ButterKnife.bind(this);
-        items = new EcommerceItems();
+        setContentView(R.layout.activity_demo_swipe);
 
-        new ConsentUI().showConsentDialog(this);
+        Resources r = getResources();
+
+        mCardContainer = (CardContainer) findViewById(R.id.swipeview);
+        mCardContainer.setOrientation(Orientations.Orientation.Disordered);
+
+        SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(this);
+
+        for (int i = 0; i < 10; i++) {
+            CardModel card = new CardModel("Cat " + i, "what a funny little kitty", r.getDrawable(R.drawable.lolcat1));
+            final int currentId = i;
+            card.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
+                @Override
+                public void onLike() {
+                    MeasureHelper.track()
+                            .screen("/vote/cat/like/" + currentId)
+                            .title("Vote")
+                            .variable(1, "cat", currentId + "")
+                            .with(getTracker());
+                }
+
+                @Override
+                public void onDislike() {
+                    MeasureHelper.track()
+                            .screen("/vote/cat/dislike" + currentId)
+                            .title("Vote")
+                            .variable(1, "cat", currentId + "")
+                            .with(getTracker());
+                }
+            });
+
+            adapter.add(card);
+        }
+
+        mCardContainer.setAdapter(adapter);
+
+        //new ConsentUI().showConsentDialog(this);
+
+        new SweetAlertDialog(this)
+                .setTitleText("Clean Insights Demo")
+                .setContentText("Swipe Left to like, Swipe Right if you don't!")
+                .show();
 
     }
 
@@ -69,6 +116,7 @@ public class DemoActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
     @OnClick(R.id.trackMainScreenViewButton)
     void onTrackMainScreenClicked(View view) {
         MeasureHelper.track().screen("/").title("Clean Insights Demo App: Main Screen").with(getTracker());
@@ -98,44 +146,10 @@ public class DemoActivity extends ActionBarActivity {
             );
         } catch (Exception e) {
             MeasureHelper.track().exception(e).description("wrong revenue").with(getTracker());
-            revenue = 0;
+            revenue = 0;  items = new EcommerceItems();
         }
         MeasureHelper.track().goal(1).revenue(revenue).with(getTracker());
-    }
+    }**/
 
-    @OnClick(R.id.addEcommerceItemButton)
-    void onAddEcommerceItemClicked(View view) {
-        List<String> skus = Arrays.asList("00001", "00002", "00003", "00004");
-        List<String> names = Arrays.asList("Silly Putty", "Fishing Rod", "Rubber Boots", "Cool Ranch Doritos");
-        List<String> categories = Arrays.asList("Toys & Games", "Hunting & Fishing", "Footwear", "Grocery");
-        List<Integer> prices = Arrays.asList(449, 3495, 2450, 250);
-
-        int index = cartItems % 4;
-        int quantity = (cartItems / 4) + 1;
-
-        items.addItem(new EcommerceItems.Item(skus.get(index))
-                .name(names.get(index))
-                .category(categories.get(index))
-                .price(prices.get(index))
-                .quantity(quantity));
-        cartItems++;
-    }
-
-    @OnClick(R.id.trackEcommerceCartUpdateButton)
-    void onTrackEcommerceCartUpdateClicked(View view) {
-        MeasureHelper.track().cartUpdate(8600).items(items).with(getTracker());
-    }
-
-    @OnClick(R.id.completeEcommerceOrderButton)
-    void onCompleteEcommerceOrderClicked(View view) {
-        MeasureHelper.track()
-                .order(String.valueOf(10000 * Math.random()), 10000)
-                .subTotal(1000)
-                .tax(2000)
-                .shipping(3000)
-                .discount(500)
-                .items(items)
-                .with(getTracker());
-    }
 
 }

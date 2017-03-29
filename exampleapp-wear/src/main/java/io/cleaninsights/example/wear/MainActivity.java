@@ -44,7 +44,7 @@ public class MainActivity extends WearableActivity {
     public void voteDogs (View view)
     {
         MeasureHelper.track()
-                .screen("/vote")
+                .screen("/vote/dog/like/1")
                 .title("Vote")
                 .variable(1, "dog", "1")
                 .with(getTracker());
@@ -53,7 +53,7 @@ public class MainActivity extends WearableActivity {
     public void voteCats (View view)
     {
         MeasureHelper.track()
-                .screen("/vote")
+                .screen("/vote/cat/like/1")
                 .title("Vote")
                 .variable(1, "cat", "1")
                 .with(getTracker());

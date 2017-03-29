@@ -25,5 +25,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.android.support:support-v4:25.0.0'
     compile 'com.jakewharton:butterknife:8.5.1'
-   // annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
+
+    // annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 }
