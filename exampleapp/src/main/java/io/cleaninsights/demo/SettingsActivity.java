@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import io.cleaninsights.sdk.piwik.PiwikApplication;
+import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import io.cleaninsights.sdk.piwik.MeasureHelper;
 
 import timber.log.Timber;
@@ -29,34 +29,34 @@ public class SettingsActivity extends Activity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MeasureHelper.track().screens(getApplication()).with(((PiwikApplication) getApplication()).getMeasurer());
+                MeasureHelper.track().screens(getApplication()).with(((CleanInsightsApplication) getApplication()).getMeasurer());
             }
         });
 
         // Dry run
         CheckBox dryRun = (CheckBox) findViewById(R.id.dryRunCheckbox);
-        dryRun.setChecked(((PiwikApplication) getApplication()).getPiwik().isDryRun());
+        dryRun.setChecked(((CleanInsightsApplication) getApplication()).getPiwik().isDryRun());
         dryRun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((PiwikApplication) getApplication()).getPiwik().setDryRun(((CheckBox) v).isChecked());
+                ((CleanInsightsApplication) getApplication()).getPiwik().setDryRun(((CheckBox) v).isChecked());
             }
         });
 
         // out out
         CheckBox optOut = (CheckBox) findViewById(R.id.optOutCheckbox);
-        optOut.setChecked(((PiwikApplication) getApplication()).getPiwik().isOptOut());
+        optOut.setChecked(((CleanInsightsApplication) getApplication()).getPiwik().isOptOut());
         optOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((PiwikApplication) getApplication()).getPiwik().setOptOut(((CheckBox) v).isChecked());
+                ((CleanInsightsApplication) getApplication()).getPiwik().setOptOut(((CheckBox) v).isChecked());
             }
         });
 
         // dispatch interval
         EditText input = (EditText) findViewById(R.id.dispatchIntervallInput);
         input.setText(Long.toString(
-                ((PiwikApplication) getApplication()).getMeasurer().getDispatchInterval()
+                ((CleanInsightsApplication) getApplication()).getMeasurer().getDispatchInterval()
         ));
         input.addTextChangedListener(
                 new TextWatcher() {
@@ -64,7 +64,7 @@ public class SettingsActivity extends Activity {
                     public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                         try {
                             int interval = Integer.valueOf(charSequence.toString().trim());
-                            ((PiwikApplication) getApplication()).getMeasurer()
+                            ((CleanInsightsApplication) getApplication()).getMeasurer()
                                     .setDispatchInterval(interval);
                         } catch (NumberFormatException e) {
                             Timber.d("not a number: %s", charSequence.toString());
@@ -85,7 +85,7 @@ public class SettingsActivity extends Activity {
         //session Timeout Input
         input = (EditText) findViewById(R.id.sessionTimeoutInput);
         input.setText(Long.toString(
-                (((PiwikApplication) getApplication()).getMeasurer().getSessionTimeout() / 60000)
+                (((CleanInsightsApplication) getApplication()).getMeasurer().getSessionTimeout() / 60000)
         ));
         input.addTextChangedListener(
                 new TextWatcher() {
@@ -94,7 +94,7 @@ public class SettingsActivity extends Activity {
                         try {
                             int timeoutMin = Integer.valueOf(charSequence.toString().trim());
                             timeoutMin = Math.abs(timeoutMin);
-                            ((PiwikApplication) getApplication()).getMeasurer()
+                            ((CleanInsightsApplication) getApplication()).getMeasurer()
                                     .setSessionTimeout(timeoutMin * 60);
                         } catch (NumberFormatException e) {
                             ((EditText) settingsActivity.findViewById(R.id.sessionTimeoutInput)).setText("30");

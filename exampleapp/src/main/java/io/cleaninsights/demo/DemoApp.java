@@ -7,11 +7,12 @@
 
 package io.cleaninsights.demo;
 
-import io.cleaninsights.sdk.piwik.PiwikApplication;
+import info.guardianproject.netcipher.proxy.OrbotHelper;
+import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 
 import io.cleaninsights.sdk.CleanInsights;
 
-public class DemoApp extends PiwikApplication {
+public class DemoApp extends CleanInsightsApplication {
 
     @Override
     public String getMeasureUrl() {
@@ -43,5 +44,8 @@ public class DemoApp extends PiwikApplication {
         cim.initPwiki(this);
 
         getMeasurer().setApplicationDomain("demo.cleaninsights.io");
+
+        OrbotHelper.get(this).init();
+
     }
 }

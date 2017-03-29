@@ -15,6 +15,8 @@ import android.support.annotation.VisibleForTesting;
 import com.squareup.tape2.QueueFile;
 
 import org.json.JSONObject;
+
+import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
 import io.cleaninsights.sdk.piwik.Piwik;
 
 import java.io.File;
@@ -237,6 +239,8 @@ public class Dispatcher {
             mDryRunOutput.clear();
 
         try {
+
+            StrongOkHttpClientBuilder builder= StrongOkHttpClientBuilder.forMaxSecurity(mPiwik.getContext());
 
             OkHttpClient client = null;
 

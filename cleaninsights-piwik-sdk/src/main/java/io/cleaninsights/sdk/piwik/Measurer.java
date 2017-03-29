@@ -12,14 +12,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import io.cleaninsights.sdk.piwik.dispatcher.Dispatcher;
-import io.cleaninsights.sdk.tools.DeviceHelper;
+import io.cleaninsights.sdk.piwik.tools.DeviceHelper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;

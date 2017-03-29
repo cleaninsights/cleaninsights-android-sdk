@@ -67,6 +67,10 @@ dependencies {
     //Supporting pinning!
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
 
+    //network hardening and onion routing
+    compile 'info.guardianproject.netcipher:netcipher:2.0.0-alpha1'
+    compile 'info.guardianproject.netcipher:netcipher-okhttp3:2.0.0-alpha1'
+
     //SweetAlerts make dialog boxes so much more friendly and fun
     compile 'cn.pedant.sweetalert:library:1.3'
 

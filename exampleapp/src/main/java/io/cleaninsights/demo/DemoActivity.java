@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import io.cleaninsights.sdk.piwik.PiwikApplication;
+import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import io.cleaninsights.sdk.piwik.MeasureHelper;
 import io.cleaninsights.sdk.piwik.Measurer;
 import io.cleaninsights.sdk.piwik.ecommerce.EcommerceItems;
@@ -44,7 +44,7 @@ public class DemoActivity extends ActionBarActivity {
     }
 
     private Measurer getTracker() {
-        return ((PiwikApplication) getApplication()).getMeasurer();
+        return ((CleanInsightsApplication) getApplication()).getMeasurer();
     }
 
     @Override

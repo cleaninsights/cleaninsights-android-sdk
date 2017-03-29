@@ -3,7 +3,7 @@ package io.cleaninsights.sdk;
 import android.content.Context;
 
 import io.cleaninsights.sdk.piwik.DownloadInsight;
-import io.cleaninsights.sdk.piwik.PiwikApplication;
+import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import io.cleaninsights.sdk.piwik.MeasureHelper;
 
 import timber.log.Timber;
@@ -59,7 +59,7 @@ public class CleanInsights {
         }
     }**/
 
-    public void initPwiki (PiwikApplication app)
+    public void initPwiki (CleanInsightsApplication app)
     {
         //Then init Piwik
 

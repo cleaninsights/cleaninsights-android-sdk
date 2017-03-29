@@ -53,7 +53,7 @@ public class MeasureHelper {
         @Nullable
         public abstract MeasureMe build();
 
-        public void with(@NonNull PiwikApplication piwikApplication) {
+        public void with(@NonNull CleanInsightsApplication piwikApplication) {
             with(piwikApplication.getMeasurer());
         }
 
