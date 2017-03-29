@@ -17,6 +17,11 @@ Usage Privacy
 * No notification of download or first use timestamps are stored, set or sent to the server.
 * No count of number of uses of the app is stored or sent to the server.
 
+Advanced Privacy
+* Built-in implementation of Google's RAPPOR Privacy Preserving Reporting: https://github.com/google/rappor
+* Support for threshold-based measurement triggers to reduce the amount of data gathered
+* Long lifecycle for dispatch of measurements to server (i.e. send only once per day, week or month)
+
 Network Security
 * HTTPS/TLS or a Tor Onion Service (.onion) is required for the backend Piwik instance.
 * Certificate pinning is supported and encouraged by default.
