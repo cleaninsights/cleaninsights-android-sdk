@@ -53,25 +53,27 @@ public class DemoActivity extends ActionBarActivity {
 
         SimpleCardStackAdapter adapter = new SimpleCardStackAdapter(this);
 
-        for (int i = 0; i < 10; i++) {
-            CardModel card = new CardModel("Cat " + i, "what a funny little kitty", r.getDrawable(R.drawable.lolcat1));
-            final int currentId = i;
+        int[] imgIds = {R.drawable.lolcat1,R.drawable.loldog1,R.drawable.lolcat2,R.drawable.loldog2,R.drawable.lolcat3,R.drawable.loldog3};
+
+        for (int i = 0; i < 20; i++) {
+            final int imgIdx = imgIds[(int)(Math.random()*((float)imgIds.length))];
+            CardModel card = new CardModel("Option " + (i+1), "Swipe left to like, right to not", r.getDrawable(imgIdx));
             card.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
                 @Override
                 public void onLike() {
                     MeasureHelper.track()
-                            .screen("/vote/cat/like/" + currentId)
+                            .screen("/vote/cat/like/" + imgIdx)
                             .title("Vote")
-                            .variable(1, "cat", currentId + "")
+                            .variable(1, "option", imgIdx + "")
                             .with(getTracker());
                 }
 
                 @Override
                 public void onDislike() {
                     MeasureHelper.track()
-                            .screen("/vote/cat/dislike" + currentId)
+                            .screen("/vote/cat/dislike" + imgIdx)
                             .title("Vote")
-                            .variable(1, "cat", currentId + "")
+                            .variable(1, "option", imgIdx + "")
                             .with(getTracker());
                 }
             });
@@ -81,12 +83,8 @@ public class DemoActivity extends ActionBarActivity {
 
         mCardContainer.setAdapter(adapter);
 
-        //new ConsentUI().showConsentDialog(this);
+        new ConsentUI().showConsentDialog(this);
 
-        new SweetAlertDialog(this)
-                .setTitleText("Clean Insights Demo")
-                .setContentText("Swipe Left to like, Swipe Right if you don't!")
-                .show();
 
     }
 
