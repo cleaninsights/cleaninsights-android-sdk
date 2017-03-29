@@ -343,7 +343,11 @@ public class Measurer {
         trackMe.trySet(QueryParams.RECORD, DEFAULT_RECORD_VALUE);
         trackMe.trySet(QueryParams.API_VERSION, DEFAULT_API_VERSION_VALUE);
         trackMe.trySet(QueryParams.RANDOM_NUMBER, mRandomAntiCachingValue.nextInt(100000));
-        trackMe.trySet(QueryParams.DATETIME_OF_REQUEST, new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ").format(new Date()));
+
+        Date dateReq = new Date();
+        String dateReqFormat = "yyyy-MM-dd 00:00:00-0000"; //Zero out the time and only show per day
+        trackMe.trySet(QueryParams.DATETIME_OF_REQUEST, new SimpleDateFormat(dateReqFormat).format(dateReq));
+
         trackMe.trySet(QueryParams.SEND_IMAGE, "0");
 
         trackMe.trySet(QueryParams.VISITOR_ID, mDefaultTrackMe.get(QueryParams.VISITOR_ID));
