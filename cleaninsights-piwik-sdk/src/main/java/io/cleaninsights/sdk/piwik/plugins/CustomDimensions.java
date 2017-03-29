@@ -1,7 +1,7 @@
-package org.piwik.sdk.plugins;
+package io.cleaninsights.sdk.piwik.plugins;
 
-import org.piwik.sdk.Piwik;
-import org.piwik.sdk.TrackMe;
+import io.cleaninsights.sdk.piwik.Piwik;
+import io.cleaninsights.sdk.piwik.TrackMe;
 
 import timber.log.Timber;
 

@@ -1,4 +1,4 @@
-package org.piwik.sdk;
+package io.cleaninsights.sdk.piwik;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

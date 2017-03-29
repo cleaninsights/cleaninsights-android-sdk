@@ -5,10 +5,10 @@
  * @license https://github.com/piwik/piwik-sdk-android/blob/master/LICENSE BSD-3 Clause
  */
 
-package org.piwik.sdk.ecommerce;
+package io.cleaninsights.sdk.piwik.ecommerce;
 
 import org.json.JSONArray;
-import org.piwik.sdk.tools.CurrencyFormatter;
+import io.cleaninsights.sdk.piwik.tools.CurrencyFormatter;
 
 import java.util.HashMap;
 import java.util.Map;

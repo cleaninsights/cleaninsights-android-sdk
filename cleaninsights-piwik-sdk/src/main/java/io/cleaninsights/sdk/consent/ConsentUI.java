@@ -14,7 +14,7 @@ public class ConsentUI {
     {
         new SweetAlertDialog(context)
                 .setTitleText("Clean Insights")
-                .setContentText("Are you ready to get measured up?")
+                .setContentText("Are you ready to be measured?")
                 .show();
     }
 }

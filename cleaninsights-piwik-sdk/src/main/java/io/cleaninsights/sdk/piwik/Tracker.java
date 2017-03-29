@@ -5,13 +5,13 @@
  * @license https://github.com/piwik/piwik-sdk-android/blob/master/LICENSE BSD-3 Clause
  */
 
-package org.piwik.sdk;
+package io.cleaninsights.sdk.piwik;
 
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
-import org.piwik.sdk.dispatcher.Dispatcher;
+import io.cleaninsights.sdk.piwik.dispatcher.Dispatcher;
 import io.cleaninsights.sdk.tools.DeviceHelper;
 
 import java.net.MalformedURLException;

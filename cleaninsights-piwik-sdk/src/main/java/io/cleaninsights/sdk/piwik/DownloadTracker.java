@@ -1,4 +1,4 @@
-package org.piwik.sdk;
+package io.cleaninsights.sdk.piwik;
 
 
 import android.content.SharedPreferences;
@@ -9,7 +9,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import org.piwik.sdk.tools.Checksum;
+import io.cleaninsights.sdk.piwik.tools.Checksum;
 
 import java.io.File;
 
@@ -133,6 +133,7 @@ public class DownloadTracker {
         }
 
         if (referringApp != null) referringApp = "http://" + referringApp;
+
 
         mTracker.track(new TrackMe(mBaseTrackMe)
                 .set(QueryParams.EVENT_CATEGORY, "Application")

@@ -1,4 +1,4 @@
-package org.piwik.sdk.tools;
+package io.cleaninsights.sdk.piwik.tools;
 
 import android.app.Activity;
 import android.text.TextUtils;

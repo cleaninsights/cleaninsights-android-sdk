@@ -7,7 +7,7 @@
  *
  */
 
-package org.piwik.sdk.tools;
+package io.cleaninsights.sdk.piwik.tools;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

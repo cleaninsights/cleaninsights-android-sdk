@@ -7,12 +7,9 @@
 
 package io.cleaninsights.demo;
 
-import org.piwik.sdk.DownloadTracker;
-import org.piwik.sdk.PiwikApplication;
-import org.piwik.sdk.TrackHelper;
+import io.cleaninsights.sdk.piwik.PiwikApplication;
 
-import io.cleaninsights.sdk.CIManager;
-import timber.log.Timber;
+import io.cleaninsights.sdk.InsightManager;
 
 public class DemoApp extends PiwikApplication {
 
@@ -42,7 +39,7 @@ public class DemoApp extends PiwikApplication {
     private void initCleanInsights() {
 
         //First init CI
-        CIManager cim = CIManager.getInstance(this);
+        InsightManager cim = InsightManager.getInstance(this);
         cim.initPwiki(this);
 
         getTracker().setApplicationDomain("demo.cleaninsights.io");

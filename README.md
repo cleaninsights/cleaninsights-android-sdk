@@ -183,7 +183,7 @@ TrackHelper.track().order("orderId", 10000).subTotal(7000).tax(2000).shipping(10
 #### Custom queries
 
 The base method for any event is
-[track](http://piwik.github.io/piwik-sdk-android/org/piwik/sdk/Tracker.html#track(org.piwik.sdk.TrackMe))
+[track](http://piwik.github.io/piwik-sdk-android/org/piwik/sdk/Tracker.html#track(io.cleaninsights.sdk.piwik.TrackMe))
 You can create your own objects, set the parameters and send it along.
 ```java
 TrackMe trackMe = new TrackMe()

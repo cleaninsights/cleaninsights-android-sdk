@@ -5,7 +5,7 @@
  * @license https://github.com/piwik/piwik-sdk-android/blob/master/LICENSE BSD-3 Clause
  */
 
-package org.piwik.sdk;
+package io.cleaninsights.sdk.piwik;
 
 /**
  * Query parameters supported by the tracking HTTP API.

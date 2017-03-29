@@ -1,37 +1,32 @@
 package io.cleaninsights.sdk;
 
 import android.content.Context;
-import android.util.Log;
-import android.widget.Toast;
 
-import org.piwik.sdk.DownloadTracker;
-import org.piwik.sdk.PiwikApplication;
-import org.piwik.sdk.TrackHelper;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
+import io.cleaninsights.sdk.piwik.DownloadTracker;
+import io.cleaninsights.sdk.piwik.PiwikApplication;
+import io.cleaninsights.sdk.piwik.TrackHelper;
 
 import timber.log.Timber;
 
 /**
  * Created by n8fr8 on 3/8/17.
  */
-public class CIManager {
+public class InsightManager {
 
     public final static String TAG = "CleanInsights";
 
-    private static CIManager mInstance = null;
+    private static InsightManager mInstance = null;
 
-    private CIManager (Context context)
+    private InsightManager(Context context)
     {
         init(context);
     }
 
-    public synchronized static CIManager getInstance (Context context)
+    public synchronized static InsightManager getInstance (Context context)
     {
         if (mInstance == null)
         {
-            mInstance = new CIManager(context);
+            mInstance = new InsightManager(context);
         }
 
         return mInstance;

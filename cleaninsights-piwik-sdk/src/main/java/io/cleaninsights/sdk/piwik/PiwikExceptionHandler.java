@@ -5,12 +5,12 @@
  * @license https://github.com/piwik/piwik-sdk-android/blob/master/LICENSE BSD-3 Clause
  */
 
-package org.piwik.sdk;
+package io.cleaninsights.sdk.piwik;
 
 import timber.log.Timber;
 
 /**
- * An exception handler that wraps the existing exception handler and dispatches event to a {@link org.piwik.sdk.Tracker}.
+ * An exception handler that wraps the existing exception handler and dispatches event to a {@link Tracker}.
  * <p/>
  * Also see documentation for {@link TrackHelper#uncaughtExceptions()}
  */

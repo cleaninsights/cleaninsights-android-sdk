@@ -16,8 +16,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
-import org.piwik.sdk.PiwikApplication;
-import org.piwik.sdk.TrackHelper;
+import io.cleaninsights.sdk.piwik.PiwikApplication;
+import io.cleaninsights.sdk.piwik.TrackHelper;
 
 import timber.log.Timber;
 

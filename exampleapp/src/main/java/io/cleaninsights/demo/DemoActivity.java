@@ -15,10 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
-import org.piwik.sdk.PiwikApplication;
-import org.piwik.sdk.TrackHelper;
-import org.piwik.sdk.Tracker;
-import org.piwik.sdk.ecommerce.EcommerceItems;
+import io.cleaninsights.sdk.piwik.PiwikApplication;
+import io.cleaninsights.sdk.piwik.TrackHelper;
+import io.cleaninsights.sdk.piwik.Tracker;
+import io.cleaninsights.sdk.piwik.ecommerce.EcommerceItems;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,7 +71,7 @@ public class DemoActivity extends ActionBarActivity {
 
     @OnClick(R.id.trackMainScreenViewButton)
     void onTrackMainScreenClicked(View view) {
-        TrackHelper.track().screen("/").title("Main screen").with(getTracker());
+        TrackHelper.track().screen("/").title("Clean Insights Demo App: Main Screen").with(getTracker());
     }
 
     @OnClick(R.id.trackCustomVarsButton)

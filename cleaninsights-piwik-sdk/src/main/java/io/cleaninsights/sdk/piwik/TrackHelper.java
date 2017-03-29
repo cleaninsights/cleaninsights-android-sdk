@@ -1,4 +1,4 @@
-package org.piwik.sdk;
+package io.cleaninsights.sdk.piwik;
 
 
 import android.annotation.TargetApi;
@@ -10,9 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import org.piwik.sdk.ecommerce.EcommerceItems;
-import org.piwik.sdk.tools.ActivityHelper;
-import org.piwik.sdk.tools.CurrencyFormatter;
+import io.cleaninsights.sdk.piwik.ecommerce.EcommerceItems;
+import io.cleaninsights.sdk.piwik.tools.ActivityHelper;
+import io.cleaninsights.sdk.piwik.tools.CurrencyFormatter;
 
 import java.net.URL;
 

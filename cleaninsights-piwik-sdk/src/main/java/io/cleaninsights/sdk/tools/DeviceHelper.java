@@ -9,16 +9,10 @@ package io.cleaninsights.sdk.tools;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.WindowManager;
 
-import org.piwik.sdk.Piwik;
+import io.cleaninsights.sdk.piwik.Piwik;
 
-import java.lang.reflect.Method;
 import java.util.Locale;
-
-import timber.log.Timber;
 
 /**
  * Helper class to gain information about the device we are running on

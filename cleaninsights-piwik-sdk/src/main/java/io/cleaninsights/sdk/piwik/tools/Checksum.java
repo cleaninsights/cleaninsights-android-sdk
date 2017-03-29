@@ -5,7 +5,7 @@
  * @license https://github.com/piwik/piwik-sdk-android/blob/master/LICENSE BSD-3 Clause
  */
 
-package org.piwik.sdk.tools;
+package io.cleaninsights.sdk.piwik.tools;
 
 import java.io.File;
 import java.io.FileInputStream;

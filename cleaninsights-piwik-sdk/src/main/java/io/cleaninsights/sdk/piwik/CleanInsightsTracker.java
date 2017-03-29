@@ -1,9 +1,8 @@
-package org.piwik.sdk;
+package io.cleaninsights.sdk.piwik;
 
 import android.support.annotation.NonNull;
 
 import java.net.MalformedURLException;
-import java.util.UUID;
 
 import io.cleaninsights.sdk.tools.DeviceHelper;
 
