@@ -56,6 +56,8 @@ public abstract class CleanInsightsApplication extends Application {
     }
 
 
+    /**
+     * // we don't need these anymore since we are using a disk based FIFO for queuing 
     @Override
     public void onLowMemory() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH && mMeasurer != null) {
@@ -71,5 +73,5 @@ public abstract class CleanInsightsApplication extends Application {
         }
         super.onTrimMemory(level);
     }
-
+    **/
 }
