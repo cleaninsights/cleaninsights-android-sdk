@@ -28,6 +28,7 @@ Network Security
 * Support for domain-fronting via common cloud services is included/planned, to destination of traffic.
 * Support for sending data proxyied over Orbot (Tor for Android) is built-in if the user has it installed and activated.
 
+![Dataflow diagram v1](https://raw.githubusercontent.com/cleaninsights/cleaninsights-android-sdk/master/ux/dataflow.png)
 
 ## Getting started
 
