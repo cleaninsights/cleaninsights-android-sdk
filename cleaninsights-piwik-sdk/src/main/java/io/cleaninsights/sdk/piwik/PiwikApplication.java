@@ -13,7 +13,8 @@ import android.os.Build;
 import java.net.MalformedURLException;
 
 public abstract class PiwikApplication extends Application {
-    private Tracker mPiwikTracker;
+
+    private Measurer mMeasurer;
 
     public Piwik getPiwik() {
         return Piwik.getInstance(this);
@@ -24,22 +25,22 @@ public abstract class PiwikApplication extends Application {
      *
      * @return a shared Tracker
      */
-    public synchronized Tracker getTracker() {
-        if (mPiwikTracker == null) {
+    public synchronized Measurer getMeasurer() {
+        if (mMeasurer == null) {
             try {
-                mPiwikTracker = getPiwik().newTracker(getTrackerUrl(), getSiteId(), null, getTrackerUrlCertificatePin());
+                mMeasurer = getPiwik().newTracker(getMeasureUrl(), getSiteId(), null, getMeasureUrlCertificatePin());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 throw new RuntimeException("Tracker URL was malformed.");
             }
         }
-        return mPiwikTracker;
+        return mMeasurer;
     }
 
     /**
      * The URL of your remote Piwik server.
      */
-    public abstract String getTrackerUrl();
+    public abstract String getMeasureUrl();
 
     /**
      * The siteID you specified for this application in Piwik.
@@ -49,7 +50,7 @@ public abstract class PiwikApplication extends Application {
     /**
      * The certificate pin of the remote Pwiki server
      */
-    public String getTrackerUrlCertificatePin ()
+    public String getMeasureUrlCertificatePin()
     {
         return null; //not required
     }
@@ -57,16 +58,16 @@ public abstract class PiwikApplication extends Application {
 
     @Override
     public void onLowMemory() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH && mPiwikTracker != null) {
-            mPiwikTracker.dispatch();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH && mMeasurer != null) {
+            mMeasurer.dispatch();
         }
         super.onLowMemory();
     }
 
     @Override
     public void onTrimMemory(int level) {
-        if ((level == TRIM_MEMORY_UI_HIDDEN || level == TRIM_MEMORY_COMPLETE) && mPiwikTracker != null) {
-            mPiwikTracker.dispatch();
+        if ((level == TRIM_MEMORY_UI_HIDDEN || level == TRIM_MEMORY_COMPLETE) && mMeasurer != null) {
+            mMeasurer.dispatch();
         }
         super.onTrimMemory(level);
     }

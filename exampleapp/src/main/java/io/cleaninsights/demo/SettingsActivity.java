@@ -17,19 +17,19 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 import io.cleaninsights.sdk.piwik.PiwikApplication;
-import io.cleaninsights.sdk.piwik.TrackHelper;
+import io.cleaninsights.sdk.piwik.MeasureHelper;
 
 import timber.log.Timber;
 
 public class SettingsActivity extends Activity {
 
     private void refreshUI(final Activity settingsActivity) {
-        // auto track button
+        // auto measure button
         Button button = (Button) findViewById(R.id.bindtoapp);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TrackHelper.track().screens(getApplication()).with(((PiwikApplication) getApplication()).getTracker());
+                MeasureHelper.track().screens(getApplication()).with(((PiwikApplication) getApplication()).getMeasurer());
             }
         });
 
@@ -56,7 +56,7 @@ public class SettingsActivity extends Activity {
         // dispatch interval
         EditText input = (EditText) findViewById(R.id.dispatchIntervallInput);
         input.setText(Long.toString(
-                ((PiwikApplication) getApplication()).getTracker().getDispatchInterval()
+                ((PiwikApplication) getApplication()).getMeasurer().getDispatchInterval()
         ));
         input.addTextChangedListener(
                 new TextWatcher() {
@@ -64,7 +64,7 @@ public class SettingsActivity extends Activity {
                     public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
                         try {
                             int interval = Integer.valueOf(charSequence.toString().trim());
-                            ((PiwikApplication) getApplication()).getTracker()
+                            ((PiwikApplication) getApplication()).getMeasurer()
                                     .setDispatchInterval(interval);
                         } catch (NumberFormatException e) {
                             Timber.d("not a number: %s", charSequence.toString());
@@ -85,7 +85,7 @@ public class SettingsActivity extends Activity {
         //session Timeout Input
         input = (EditText) findViewById(R.id.sessionTimeoutInput);
         input.setText(Long.toString(
-                (((PiwikApplication) getApplication()).getTracker().getSessionTimeout() / 60000)
+                (((PiwikApplication) getApplication()).getMeasurer().getSessionTimeout() / 60000)
         ));
         input.addTextChangedListener(
                 new TextWatcher() {
@@ -94,7 +94,7 @@ public class SettingsActivity extends Activity {
                         try {
                             int timeoutMin = Integer.valueOf(charSequence.toString().trim());
                             timeoutMin = Math.abs(timeoutMin);
-                            ((PiwikApplication) getApplication()).getTracker()
+                            ((PiwikApplication) getApplication()).getMeasurer()
                                     .setSessionTimeout(timeoutMin * 60);
                         } catch (NumberFormatException e) {
                             ((EditText) settingsActivity.findViewById(R.id.sessionTimeoutInput)).setText("30");

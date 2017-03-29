@@ -17,9 +17,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import timber.log.Timber;
 
 /**
- * You can track up to 5 custom variables for each user to your app,
+ * You can measure up to 5 custom variables for each user to your app,
  * and up to 5 custom variables for each screen view.
- * You may configure Piwik to track more custom variables: http://piwik.org/faq/how-to/faq_17931/
+ * You may configure Piwik to measure more custom variables: http://piwik.org/faq/how-to/faq_17931/
  * <p/>
  * Desired json output:
  * {
@@ -52,7 +52,7 @@ public class CustomVariables {
      *              For example, if you choose to store the variable name = "Gender" in index = 1
      *              and you record another custom variable in index = 1, then the "Gender" variable
      *              will be deleted and replaced with the new custom variable stored in index 1.
-     *              You may configure Piwik to track more custom variables than 5.
+     *              You may configure Piwik to measure more custom variables than 5.
      *              Read more: http://piwik.org/faq/how-to/faq_17931/
      * @param name  of a specific Custom Variable such as "User type".
      * @param value of a specific Custom Variable such as "Customer".

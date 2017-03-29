@@ -2,31 +2,31 @@ package io.cleaninsights.sdk;
 
 import android.content.Context;
 
-import io.cleaninsights.sdk.piwik.DownloadTracker;
+import io.cleaninsights.sdk.piwik.DownloadInsight;
 import io.cleaninsights.sdk.piwik.PiwikApplication;
-import io.cleaninsights.sdk.piwik.TrackHelper;
+import io.cleaninsights.sdk.piwik.MeasureHelper;
 
 import timber.log.Timber;
 
 /**
  * Created by n8fr8 on 3/8/17.
  */
-public class InsightManager {
+public class CleanInsights {
 
     public final static String TAG = "CleanInsights";
 
-    private static InsightManager mInstance = null;
+    private static CleanInsights mInstance = null;
 
-    private InsightManager(Context context)
+    private CleanInsights(Context context)
     {
         init(context);
     }
 
-    public synchronized static InsightManager getInstance (Context context)
+    public synchronized static CleanInsights getInstance (Context context)
     {
         if (mInstance == null)
         {
-            mInstance = new InsightManager(context);
+            mInstance = new CleanInsights(context);
         }
 
         return mInstance;
@@ -70,21 +70,21 @@ public class InsightManager {
         app.getPiwik().setDryRun(BuildConfig.DEBUG);
 
         // If you want to set a specific userID other than the random UUID token, do it NOW to ensure all future actions use that token.
-        // Changing it later will track new events as belonging to a different user.
+        // Changing it later will measure new events as belonging to a different user.
         // String userEmail = ....preferences....getString
 
-        // getTracker().setApplicationDomain();
-        app.getTracker().setVisitCustomVariable(0, "foo","blat");
-        app.getTracker().setVisitCustomVariable(1, "bar","blat");
-        app.getTracker().setUserId("anonymous");
+        // getMeasurer().setApplicationDomain();
+        app.getMeasurer().setVisitCustomVariable(0, "foo","blat");
+        app.getMeasurer().setVisitCustomVariable(1, "bar","blat");
+        app.getMeasurer().setUserId("anonymous");
 
 
         // Track this app install, this will only trigger once per app version.
         // i.e. "http://com.piwik.demo:1/185DECB5CFE28FDB2F45887022D668B4"
-        TrackHelper.track().download().identifier(DownloadTracker.Extra.APK_CHECKSUM).with(app.getTracker());
+        MeasureHelper.track().download().identifier(DownloadInsight.Extra.APK_CHECKSUM).with(app.getMeasurer());
         // Alternative:
         // i.e. "http://com.piwik.demo:1/com.android.vending"
-        // getTracker().download();
+        // getMeasurer().download();
     }
 
 }

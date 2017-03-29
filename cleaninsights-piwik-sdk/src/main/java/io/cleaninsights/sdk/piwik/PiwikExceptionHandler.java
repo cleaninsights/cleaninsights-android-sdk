@@ -10,22 +10,22 @@ package io.cleaninsights.sdk.piwik;
 import timber.log.Timber;
 
 /**
- * An exception handler that wraps the existing exception handler and dispatches event to a {@link Tracker}.
+ * An exception handler that wraps the existing exception handler and dispatches event to a {@link Measurer}.
  * <p/>
- * Also see documentation for {@link TrackHelper#uncaughtExceptions()}
+ * Also see documentation for {@link MeasureHelper#uncaughtExceptions()}
  */
 public class PiwikExceptionHandler implements Thread.UncaughtExceptionHandler {
-    private final Tracker mTracker;
-    private final TrackMe mTrackMe;
+    private final Measurer mTracker;
+    private final MeasureMe mTrackMe;
     private final Thread.UncaughtExceptionHandler mDefaultExceptionHandler;
 
-    public PiwikExceptionHandler(Tracker tracker, TrackMe trackMe) {
+    public PiwikExceptionHandler(Measurer tracker, MeasureMe trackMe) {
         mTracker = tracker;
         mTrackMe = trackMe;
         mDefaultExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
     }
 
-    public Tracker getTracker() {
+    public Measurer getTracker() {
         return mTracker;
     }
 
@@ -40,11 +40,11 @@ public class PiwikExceptionHandler implements Thread.UncaughtExceptionHandler {
     public void uncaughtException(Thread thread, Throwable ex) {
         try {
             String excInfo = ex.getMessage();
-            TrackHelper.track().exception(ex).description(excInfo).fatal(true).with(getTracker());
+            MeasureHelper.track().exception(ex).description(excInfo).fatal(true).with(getTracker());
             // Immediately dispatch as the app might be dying after rethrowing the exception
             getTracker().dispatch();
         } catch (Exception e) {
-            Timber.tag(Tracker.LOGGER_TAG).e(e, "Couldn't track uncaught exception");
+            Timber.tag(Measurer.LOGGER_TAG).e(e, "Couldn't measure uncaught exception");
         } finally {
             // re-throw critical exception further to the os (important)
             if (getDefaultExceptionHandler() != null && getDefaultExceptionHandler() != this) {

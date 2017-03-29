@@ -15,11 +15,11 @@ import java.io.File;
 
 import timber.log.Timber;
 
-public class DownloadTracker {
+public class DownloadInsight {
     protected static final String LOGGER_TAG = Piwik.LOGGER_PREFIX + "DownloadTrackingHelper";
     private static final String INSTALL_SOURCE_GOOGLE_PLAY = "com.android.vending";
-    private final Tracker mTracker;
-    private final TrackMe mBaseTrackMe;
+    private final Measurer mTracker;
+    private final MeasureMe mBaseTrackMe;
     private final Object TRACK_ONCE_LOCK = new Object();
     private final PackageManager mPackMan;
     private final String mPackageName;
@@ -40,11 +40,11 @@ public class DownloadTracker {
         NONE
     }
 
-    public DownloadTracker(Tracker tracker) {
-        this(tracker, new TrackMe());
+    public DownloadInsight(Measurer tracker) {
+        this(tracker, new MeasureMe());
     }
 
-    public DownloadTracker(Tracker tracker, TrackMe baseTrackMe) {
+    public DownloadInsight(Measurer tracker, MeasureMe baseTrackMe) {
         mTracker = tracker;
         mBaseTrackMe = baseTrackMe;
         mPreferences = tracker.getPiwik().getSharedPreferences();
@@ -135,7 +135,7 @@ public class DownloadTracker {
         if (referringApp != null) referringApp = "http://" + referringApp;
 
 
-        mTracker.track(new TrackMe(mBaseTrackMe)
+        mTracker.measure(new MeasureMe(mBaseTrackMe)
                 .set(QueryParams.EVENT_CATEGORY, "Application")
                 .set(QueryParams.EVENT_ACTION, "downloaded")
                 .set(QueryParams.ACTION_NAME, "application/downloaded")

@@ -16,18 +16,18 @@ import java.util.Map;
  * This objects represents one query to Piwik.
  * For each event send to Piwik a TrackMe gets created, either explicitly by you or implicitly by the Tracker.
  */
-public class TrackMe {
+public class MeasureMe {
     private static final int DEFAULT_QUERY_CAPACITY = 14;
     private final HashMap<String, String> mQueryParams = new HashMap<>(DEFAULT_QUERY_CAPACITY);
 
-    public TrackMe() {
+    public MeasureMe() {
     }
 
-    public TrackMe(TrackMe trackMe) {
+    public MeasureMe(MeasureMe trackMe) {
         mQueryParams.putAll(trackMe.mQueryParams);
     }
 
-    protected synchronized TrackMe set(@NonNull String key, String value) {
+    protected synchronized MeasureMe set(@NonNull String key, String value) {
         if (value == null)
             mQueryParams.remove(key);
         else if (value.length() > 0)
@@ -48,22 +48,22 @@ public class TrackMe {
      * @param value value
      * @return tracker instance
      */
-    public synchronized TrackMe set(@NonNull QueryParams key, String value) {
+    public synchronized MeasureMe set(@NonNull QueryParams key, String value) {
         set(key.toString(), value);
         return this;
     }
 
-    public synchronized TrackMe set(@NonNull QueryParams key, int value) {
+    public synchronized MeasureMe set(@NonNull QueryParams key, int value) {
         set(key, Integer.toString(value));
         return this;
     }
 
-    public synchronized TrackMe set(@NonNull QueryParams key, float value) {
+    public synchronized MeasureMe set(@NonNull QueryParams key, float value) {
         set(key, Float.toString(value));
         return this;
     }
 
-    public synchronized TrackMe set(@NonNull QueryParams key, long value) {
+    public synchronized MeasureMe set(@NonNull QueryParams key, long value) {
         set(key, Long.toString(value));
         return this;
     }
@@ -79,7 +79,7 @@ public class TrackMe {
      * @param value value
      * @return this (for chaining)
      */
-    public synchronized TrackMe trySet(@NonNull QueryParams key, int value) {
+    public synchronized MeasureMe trySet(@NonNull QueryParams key, int value) {
         return trySet(key, String.valueOf(value));
     }
 
@@ -90,11 +90,11 @@ public class TrackMe {
      * @param value value
      * @return this (for chaining)
      */
-    public synchronized TrackMe trySet(@NonNull QueryParams key, float value) {
+    public synchronized MeasureMe trySet(@NonNull QueryParams key, float value) {
         return trySet(key, String.valueOf(value));
     }
 
-    public synchronized TrackMe trySet(@NonNull QueryParams key, long value) {
+    public synchronized MeasureMe trySet(@NonNull QueryParams key, long value) {
         return trySet(key, String.valueOf(value));
     }
 
@@ -105,7 +105,7 @@ public class TrackMe {
      * @param value value
      * @return this (for chaining)
      */
-    public synchronized TrackMe trySet(@NonNull QueryParams key, String value) {
+    public synchronized MeasureMe trySet(@NonNull QueryParams key, String value) {
         if (!has(key))
             set(key, value);
         return this;

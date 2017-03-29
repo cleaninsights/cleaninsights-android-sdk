@@ -16,8 +16,8 @@ import android.view.View;
 import android.widget.EditText;
 
 import io.cleaninsights.sdk.piwik.PiwikApplication;
-import io.cleaninsights.sdk.piwik.TrackHelper;
-import io.cleaninsights.sdk.piwik.Tracker;
+import io.cleaninsights.sdk.piwik.MeasureHelper;
+import io.cleaninsights.sdk.piwik.Measurer;
 import io.cleaninsights.sdk.piwik.ecommerce.EcommerceItems;
 
 import java.util.Arrays;
@@ -43,8 +43,8 @@ public class DemoActivity extends ActionBarActivity {
 
     }
 
-    private Tracker getTracker() {
-        return ((PiwikApplication) getApplication()).getTracker();
+    private Measurer getTracker() {
+        return ((PiwikApplication) getApplication()).getMeasurer();
     }
 
     @Override
@@ -71,12 +71,12 @@ public class DemoActivity extends ActionBarActivity {
 
     @OnClick(R.id.trackMainScreenViewButton)
     void onTrackMainScreenClicked(View view) {
-        TrackHelper.track().screen("/").title("Clean Insights Demo App: Main Screen").with(getTracker());
+        MeasureHelper.track().screen("/").title("Clean Insights Demo App: Main Screen").with(getTracker());
     }
 
     @OnClick(R.id.trackCustomVarsButton)
     void onTrackCustomVarsClicked(View view) {
-        TrackHelper.track()
+        MeasureHelper.track()
                 .screen("/custom_vars")
                 .title("Custom Vars")
                 .variable(1, "first", "var")
@@ -86,7 +86,7 @@ public class DemoActivity extends ActionBarActivity {
 
     @OnClick(R.id.raiseExceptionButton)
     void onRaiseExceptionClicked(View view) {
-        TrackHelper.track().exception(new Exception("OnPurposeException")).description("Crash button").fatal(false).with(getTracker());
+        MeasureHelper.track().exception(new Exception("OnPurposeException")).description("Crash button").fatal(false).with(getTracker());
     }
 
     @OnClick(R.id.trackGoalButton)
@@ -97,10 +97,10 @@ public class DemoActivity extends ActionBarActivity {
                     ((EditText) findViewById(R.id.goalTextEditView)).getText().toString()
             );
         } catch (Exception e) {
-            TrackHelper.track().exception(e).description("wrong revenue").with(getTracker());
+            MeasureHelper.track().exception(e).description("wrong revenue").with(getTracker());
             revenue = 0;
         }
-        TrackHelper.track().goal(1).revenue(revenue).with(getTracker());
+        MeasureHelper.track().goal(1).revenue(revenue).with(getTracker());
     }
 
     @OnClick(R.id.addEcommerceItemButton)
@@ -123,12 +123,12 @@ public class DemoActivity extends ActionBarActivity {
 
     @OnClick(R.id.trackEcommerceCartUpdateButton)
     void onTrackEcommerceCartUpdateClicked(View view) {
-        TrackHelper.track().cartUpdate(8600).items(items).with(getTracker());
+        MeasureHelper.track().cartUpdate(8600).items(items).with(getTracker());
     }
 
     @OnClick(R.id.completeEcommerceOrderButton)
     void onCompleteEcommerceOrderClicked(View view) {
-        TrackHelper.track()
+        MeasureHelper.track()
                 .order(String.valueOf(10000 * Math.random()), 10000)
                 .subTotal(1000)
                 .tax(2000)

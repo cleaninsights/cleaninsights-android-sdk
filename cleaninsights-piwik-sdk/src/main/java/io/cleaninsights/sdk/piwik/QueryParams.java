@@ -45,7 +45,7 @@ public enum QueryParams {
     /**
      * The unique visitor ID, must be a 16 characters hexadecimal string.<p>
      * Every unique visitor must be assigned a different ID and this ID must not change after it is assigned.
-     * If this value is not set Piwik will still track visits, but the unique visitors metric might be less accurate.
+     * If this value is not set Piwik will still measure visits, but the unique visitors metric might be less accurate.
      * <p/>
      * (recommended)
      */

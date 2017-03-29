@@ -31,7 +31,7 @@ import timber.log.Timber;
  * Main tracking class
  * This class is threadsafe.
  */
-public class Tracker {
+public class Measurer {
     protected static final String LOGGER_TAG = Piwik.LOGGER_PREFIX + "Tracker";
 
     // Piwik default parameter values
@@ -63,7 +63,7 @@ public class Tracker {
     private final CustomVariables mVisitCustomVariable = new CustomVariables();
     private final Dispatcher mDispatcher;
     private final Random mRandomAntiCachingValue = new Random(new Date().getTime());
-    private final TrackMe mDefaultTrackMe = new TrackMe();
+    private final MeasureMe mDefaultTrackMe = new MeasureMe();
 
     private String mLastEvent;
     private String mApplicationDomain;
@@ -79,7 +79,7 @@ public class Tracker {
      * @param piwik     piwik object used to gain access to application params such as name, resolution or lang
      * @throws MalformedURLException
      */
-    protected Tracker(@NonNull final String url, int siteId, String authToken, String certPin, @NonNull Piwik piwik) throws MalformedURLException {
+    protected Measurer(@NonNull final String url, int siteId, String authToken, String certPin, @NonNull Piwik piwik) throws MalformedURLException {
 
         String checkUrl = url;
         if (checkUrl.endsWith("piwik.php") || checkUrl.endsWith("piwik-proxy.php")) {
@@ -98,25 +98,23 @@ public class Tracker {
         mDispatcher = new Dispatcher(mPiwik, mApiUrl, authToken, certPin);
 
         String userId = getSharedPreferences().getString(PREF_KEY_TRACKER_USERID, null);
-        if (userId == null) {
-            userId = UUID.randomUUID().toString();
-            getSharedPreferences().edit().putString(PREF_KEY_TRACKER_USERID, userId).apply();
-        }
-        mDefaultTrackMe.set(QueryParams.USER_ID, userId);
+        getSharedPreferences().edit().putString(PREF_KEY_TRACKER_USERID, userId).apply();
 
-        mDefaultTrackMe.set(QueryParams.SESSION_START, DEFAULT_TRUE_VALUE);
+        getDefaultTrackMe().set(QueryParams.USER_ID, userId);
+
+        getDefaultTrackMe().set(QueryParams.SESSION_START, DEFAULT_TRUE_VALUE);
 
         String resolution = DEFAULT_UNKNOWN_VALUE;
-        int[] res = DeviceHelper.getResolution(mPiwik.getContext());
+
+        int[] res = DeviceHelper.getResolution(piwik.getContext());
         if (res != null)
             resolution = String.format("%sx%s", res[0], res[1]);
-        mDefaultTrackMe.set(QueryParams.SCREEN_RESOLUTION, resolution);
+        getDefaultTrackMe().set(QueryParams.SCREEN_RESOLUTION, resolution);
 
-        mDefaultTrackMe.set(QueryParams.USER_AGENT, DeviceHelper.getUserAgent());
-        mDefaultTrackMe.set(QueryParams.LANGUAGE, DeviceHelper.getUserLanguage());
-        mDefaultTrackMe.set(QueryParams.COUNTRY, DeviceHelper.getUserCountry());
-        mDefaultTrackMe.set(QueryParams.VISITOR_ID, makeRandomVisitorId());
-        mDefaultTrackMe.set(QueryParams.URL_PATH, fixUrl(null, getApplicationBaseURL()));
+        getDefaultTrackMe().set(QueryParams.USER_AGENT, DeviceHelper.getUserAgent());
+        getDefaultTrackMe().set(QueryParams.LANGUAGE, DeviceHelper.getUserLanguage());
+        getDefaultTrackMe().set(QueryParams.COUNTRY, DeviceHelper.getUserCountry());
+        getDefaultTrackMe().set(QueryParams.VISITOR_ID, makeRandomVisitorId());
     }
 
     public Piwik getPiwik() {
@@ -139,11 +137,11 @@ public class Tracker {
 
     /**
      * Piwik will use the content of this object to fill in missing values before any transmission.
-     * While you can modify it's values, you can also just set them in your {@link TrackMe} object as already set values will not be overwritten.
+     * While you can modify it's values, you can also just set them in your {@link MeasureMe} object as already set values will not be overwritten.
      *
      * @return the default TrackMe object
      */
-    public TrackMe getDefaultTrackMe() {
+    public MeasureMe getDefaultTrackMe() {
         return mDefaultTrackMe;
     }
 
@@ -210,7 +208,7 @@ public class Tracker {
      *
      * @param dispatchInterval in milliseconds
      */
-    public Tracker setDispatchInterval(long dispatchInterval) {
+    public Measurer setDispatchInterval(long dispatchInterval) {
         mDispatcher.setDispatchInterval(dispatchInterval);
         return this;
     }
@@ -235,7 +233,7 @@ public class Tracker {
      *
      * @param userId passing null will delete the current user-id.
      */
-    public Tracker setUserId(String userId) {
+    public Measurer setUserId(String userId) {
         mDefaultTrackMe.set(QueryParams.USER_ID, userId);
         getSharedPreferences().edit().putString(PREF_KEY_TRACKER_USERID, userId).apply();
         return this;
@@ -251,9 +249,9 @@ public class Tracker {
     /**
      * The unique visitor ID, must be a 16 characters hexadecimal string.
      * Every unique visitor must be assigned a different ID and this ID must not change after it is assigned.
-     * If this value is not set Piwik will still track visits, but the unique visitors metric might be less accurate.
+     * If this value is not set Piwik will still measure visits, but the unique visitors metric might be less accurate.
      */
-    public Tracker setVisitorId(String visitorId) throws IllegalArgumentException {
+    public Measurer setVisitorId(String visitorId) throws IllegalArgumentException {
         if (confirmVisitorIdFormat(visitorId))
             mDefaultTrackMe.set(QueryParams.VISITOR_ID, visitorId);
         return this;
@@ -280,7 +278,7 @@ public class Tracker {
      *
      * @param domain your-domain.com
      */
-    public Tracker setApplicationDomain(String domain) {
+    public Measurer setApplicationDomain(String domain) {
         mApplicationDomain = domain;
         mDefaultTrackMe.set(QueryParams.URL_PATH, fixUrl(null, getApplicationBaseURL()));
         return this;
@@ -293,7 +291,7 @@ public class Tracker {
     /**
      * There parameters are only interesting for the very first query.
      */
-    private void injectInitialParams(TrackMe trackMe) {
+    private void injectInitialParams(MeasureMe trackMe) {
 
         //let's just make this useless for now
         long firstVisitTime = new Date().getTime();
@@ -341,7 +339,7 @@ public class Tracker {
     /**
      * These parameters are required for all queries.
      */
-    private void injectBaseParams(TrackMe trackMe) {
+    private void injectBaseParams(MeasureMe trackMe) {
         trackMe.trySet(QueryParams.SITE_ID, mSiteId);
         trackMe.trySet(QueryParams.RECORD, DEFAULT_RECORD_VALUE);
         trackMe.trySet(QueryParams.API_VERSION, DEFAULT_API_VERSION_VALUE);
@@ -375,7 +373,7 @@ public class Tracker {
 
     private CountDownLatch mSessionStartLatch = new CountDownLatch(0);
 
-    public Tracker track(TrackMe trackMe) {
+    public Measurer measure(MeasureMe measureMe) {
         boolean newSession;
         synchronized (mSessionLock) {
             newSession = tryNewSession();
@@ -383,7 +381,7 @@ public class Tracker {
                 mSessionStartLatch = new CountDownLatch(1);
         }
         if (newSession) {
-            injectInitialParams(trackMe);
+            injectInitialParams(measureMe);
         } else {
             try {
                 // Another thread is currently creating a sessions first transmission, wait until it's done.
@@ -393,8 +391,8 @@ public class Tracker {
             }
         }
 
-        injectBaseParams(trackMe);
-        String event = Dispatcher.urlEncodeUTF8(trackMe.toMap());
+        injectBaseParams(measureMe);
+        String event = Dispatcher.urlEncodeUTF8(measureMe.toMap());
         if (mPiwik.isOptOut()) { //TODO we should check this optOut variable
             mLastEvent = event;
             Timber.tag(LOGGER_TAG).d("URL omitted due to opt out: %s", event);
@@ -411,7 +409,9 @@ public class Tracker {
     }
 
     public static String makeRandomVisitorId() {
-        return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 16);
+        //return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 16);
+        return "ffffffffffffffff";// 16 digit hexadecimal
+
     }
 
     /**
@@ -419,7 +419,7 @@ public class Tracker {
      * and then visualize the reports of how many visits, conversions, etc. for each custom variable.
      * A custom variable is defined by a name — for example,
      * "User status" — and a value – for example, "LoggedIn" or "Anonymous".
-     * You can track up to 5 custom variables for each user to your app.
+     * You can measure up to 5 custom variables for each user to your app.
      *
      * @param index this Integer accepts values from 1 to 5.
      *              A given custom variable name must always be stored in the same "index" per session.
@@ -429,7 +429,7 @@ public class Tracker {
      * @param name  String defines the name of a specific Custom Variable such as "User type".
      * @param value String defines the value of a specific Custom Variable such as "Customer".
      */
-    public Tracker setVisitCustomVariable(int index, String name, String value) {
+    public Measurer setVisitCustomVariable(int index, String name, String value) {
         mVisitCustomVariable.put(index, name, value);
         return this;
     }
@@ -442,7 +442,7 @@ public class Tracker {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Tracker tracker = (Tracker) o;
+        Measurer tracker = (Measurer) o;
         return mSiteId == tracker.mSiteId && mApiUrl.equals(tracker.mApiUrl);
     }
 

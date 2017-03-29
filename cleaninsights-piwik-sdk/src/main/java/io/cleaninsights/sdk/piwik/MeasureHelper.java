@@ -18,53 +18,53 @@ import java.net.URL;
 
 import timber.log.Timber;
 
-public class TrackHelper {
-    private final TrackMe mBaseTrackMe;
+public class MeasureHelper {
+    private final MeasureMe mBaseTrackMe;
 
-    private TrackHelper() {
+    private MeasureHelper() {
         this(null);
     }
 
-    private TrackHelper(@Nullable TrackMe baseTrackMe) {
-        if (baseTrackMe == null) baseTrackMe = new TrackMe();
+    private MeasureHelper(@Nullable MeasureMe baseTrackMe) {
+        if (baseTrackMe == null) baseTrackMe = new MeasureMe();
         mBaseTrackMe = baseTrackMe;
     }
 
-    public static TrackHelper track() {
-        return new TrackHelper();
+    public static MeasureHelper track() {
+        return new MeasureHelper();
     }
 
-    public static TrackHelper track(@NonNull TrackMe base) {
-        return new TrackHelper(base);
+    public static MeasureHelper track(@NonNull MeasureMe base) {
+        return new MeasureHelper(base);
     }
 
     static abstract class BaseEvent {
 
-        private final TrackHelper mBaseBuilder;
+        private final MeasureHelper mBaseBuilder;
 
-        BaseEvent(TrackHelper baseBuilder) {
+        BaseEvent(MeasureHelper baseBuilder) {
             mBaseBuilder = baseBuilder;
         }
 
-        TrackMe getBaseTrackMe() {
+        MeasureMe getBaseTrackMe() {
             return mBaseBuilder.mBaseTrackMe;
         }
 
         @Nullable
-        public abstract TrackMe build();
+        public abstract MeasureMe build();
 
         public void with(@NonNull PiwikApplication piwikApplication) {
-            with(piwikApplication.getTracker());
+            with(piwikApplication.getMeasurer());
         }
 
-        public void with(@NonNull Tracker tracker) {
-            TrackMe trackMe = build();
-            if (trackMe != null) tracker.track(trackMe);
+        public void with(@NonNull Measurer tracker) {
+            MeasureMe trackMe = build();
+            if (trackMe != null) tracker.measure(trackMe);
         }
     }
 
     /**
-     * To track a screenview.
+     * To measure a screenview.
      *
      * @param path Example: "/user/settings/billing"
      * @return an object that allows addition of further details.
@@ -77,7 +77,7 @@ public class TrackHelper {
      * Calls {@link #screen(String)} for an activity.
      * Uses the activity-stack as path and activity title as names.
      *
-     * @param activity the activity to track
+     * @param activity the activity to measure
      */
     public Screen screen(Activity activity) {
         String breadcrumbs = ActivityHelper.getBreadcrumbs(activity);
@@ -89,7 +89,7 @@ public class TrackHelper {
         private final CustomVariables mCustomVariables = new CustomVariables();
         private String mTitle;
 
-        Screen(TrackHelper baseBuilder, String path) {
+        Screen(MeasureHelper baseBuilder, String path) {
             super(baseBuilder);
             mPath = path;
         }
@@ -106,7 +106,7 @@ public class TrackHelper {
         }
 
         /**
-         * Just like {@link Tracker#setVisitCustomVariable(int, String, String)} but only valid per screen.
+         * Just like {@link Measurer#setVisitCustomVariable(int, String, String)} but only valid per screen.
          * Only takes effect when setting prior to tracking the screen view.
          */
         public Screen variable(int index, String name, String value) {
@@ -116,9 +116,9 @@ public class TrackHelper {
 
         @Nullable
         @Override
-        public TrackMe build() {
+        public MeasureMe build() {
             if (mPath == null) return null;
-            return new TrackMe(getBaseTrackMe())
+            return new MeasureMe(getBaseTrackMe())
                     .set(QueryParams.SCREEN_SCOPE_CUSTOM_VARIABLES, mCustomVariables.toString())
                     .set(QueryParams.URL_PATH, mPath)
                     .set(QueryParams.ACTION_NAME, mTitle);
@@ -149,7 +149,7 @@ public class TrackHelper {
         private String mName;
         private Float mValue;
 
-        EventBuilder(TrackHelper builder, @NonNull String category, @NonNull String action) {
+        EventBuilder(MeasureHelper builder, @NonNull String category, @NonNull String action) {
             super(builder);
             mCategory = category;
             mAction = action;
@@ -184,8 +184,8 @@ public class TrackHelper {
 
         @Nullable
         @Override
-        public TrackMe build() {
-            TrackMe trackMe = new TrackMe(getBaseTrackMe())
+        public MeasureMe build() {
+            MeasureMe trackMe = new MeasureMe(getBaseTrackMe())
                     .set(QueryParams.URL_PATH, mPath)
                     .set(QueryParams.EVENT_CATEGORY, mCategory)
                     .set(QueryParams.EVENT_ACTION, mAction)
@@ -213,7 +213,7 @@ public class TrackHelper {
         private final int mIdGoal;
         private Float mRevenue;
 
-        Goal(TrackHelper baseBuilder, int idGoal) {
+        Goal(MeasureHelper baseBuilder, int idGoal) {
             super(baseBuilder);
             mIdGoal = idGoal;
         }
@@ -230,9 +230,9 @@ public class TrackHelper {
 
         @Nullable
         @Override
-        public TrackMe build() {
+        public MeasureMe build() {
             if (mIdGoal < 0) return null;
-            TrackMe trackMe = new TrackMe(getBaseTrackMe()).set(QueryParams.GOAL_ID, mIdGoal);
+            MeasureMe trackMe = new MeasureMe(getBaseTrackMe()).set(QueryParams.GOAL_ID, mIdGoal);
             if (mRevenue != null) trackMe.set(QueryParams.REVENUE, mRevenue);
             return trackMe;
         }
@@ -251,18 +251,18 @@ public class TrackHelper {
     public static class Outlink extends BaseEvent {
         private final URL mURL;
 
-        Outlink(TrackHelper baseBuilder, URL url) {
+        Outlink(MeasureHelper baseBuilder, URL url) {
             super(baseBuilder);
             mURL = url;
         }
 
         @Nullable
         @Override
-        public TrackMe build() {
+        public MeasureMe build() {
             if (!mURL.getProtocol().equals("http") && !mURL.getProtocol().equals("https") && !mURL.getProtocol().equals("ftp")) {
                 return null;
             }
-            return new TrackMe(getBaseTrackMe())
+            return new MeasureMe(getBaseTrackMe())
                     .set(QueryParams.LINK, mURL.toExternalForm())
                     .set(QueryParams.URL_PATH, mURL.toExternalForm());
         }
@@ -274,12 +274,12 @@ public class TrackHelper {
      * {@link Download#force()}
      * <p class="note">
      * Resulting download url:<p/>
-     * Case {@link DownloadTracker.Extra#APK_CHECKSUM}:<br/>
+     * Case {@link DownloadInsight.Extra#APK_CHECKSUM}:<br/>
      * http://packageName:versionCode/apk-md5-checksum<br/>
      * Usually the installer-packagename is something like "com.android.vending" (Google Play),
      * but users can modify this value, don't be surprised by some random values.<p/>
      * <p/>
-     * Case {@link DownloadTracker.Extra#NONE}:<br/>
+     * Case {@link DownloadInsight.Extra#NONE}:<br/>
      * http://packageName:versionCode<p/>
      *
      * @return this object, to chain calls.
@@ -289,22 +289,22 @@ public class TrackHelper {
     }
 
     public static class Download {
-        private final TrackHelper mBaseBuilder;
-        private DownloadTracker.Extra mExtra = DownloadTracker.Extra.NONE;
+        private final MeasureHelper mBaseBuilder;
+        private DownloadInsight.Extra mExtra = DownloadInsight.Extra.NONE;
         private boolean mForced = false;
         private String mVersion;
 
-        Download(TrackHelper baseBuilder) {
+        Download(MeasureHelper baseBuilder) {
             mBaseBuilder = baseBuilder;
         }
 
         /**
          * Sets the identifier type for this download
          *
-         * @param identifier {@link DownloadTracker.Extra#APK_CHECKSUM} or {@link DownloadTracker.Extra#NONE}
+         * @param identifier {@link DownloadInsight.Extra#APK_CHECKSUM} or {@link DownloadInsight.Extra#NONE}
          * @return this object, to chain calls.
          */
-        public Download identifier(DownloadTracker.Extra identifier) {
+        public Download identifier(DownloadInsight.Extra identifier) {
             mExtra = identifier;
             return this;
         }
@@ -322,7 +322,7 @@ public class TrackHelper {
         }
 
         /**
-         * To track specific app versions. Useful if the app can change without the apk being updated (e.g. hybrid apps/web apps).
+         * To measure specific app versions. Useful if the app can change without the apk being updated (e.g. hybrid apps/web apps).
          *
          * @param version by default {@link android.content.pm.PackageInfo#versionCode} is used.
          * @return this object, to chain calls.
@@ -332,8 +332,8 @@ public class TrackHelper {
             return this;
         }
 
-        public void with(Tracker tracker) {
-            final DownloadTracker downloadTracker = new DownloadTracker(tracker, mBaseBuilder.mBaseTrackMe);
+        public void with(Measurer tracker) {
+            final DownloadInsight downloadTracker = new DownloadInsight(tracker, mBaseBuilder.mBaseTrackMe);
             if (mVersion != null) downloadTracker.setVersion(mVersion);
             if (mForced) {
                 downloadTracker.trackNewAppDownload(mExtra);
@@ -357,7 +357,7 @@ public class TrackHelper {
         private String mContentPiece;
         private String mContentTarget;
 
-        ContentImpression(TrackHelper baseBuilder, String contentName) {
+        ContentImpression(MeasureHelper baseBuilder, String contentName) {
             super(baseBuilder);
             mContentName = contentName;
         }
@@ -380,9 +380,9 @@ public class TrackHelper {
 
         @Nullable
         @Override
-        public TrackMe build() {
+        public MeasureMe build() {
             if (TextUtils.isEmpty(mContentName)) return null;
-            return new TrackMe(getBaseTrackMe())
+            return new MeasureMe(getBaseTrackMe())
                     .set(QueryParams.CONTENT_NAME, mContentName)
                     .set(QueryParams.CONTENT_PIECE, mContentPiece)
                     .set(QueryParams.CONTENT_TARGET, mContentTarget);
@@ -407,7 +407,7 @@ public class TrackHelper {
         private String mContentPiece;
         private String mContentTarget;
 
-        ContentInteraction(TrackHelper baseBuilder, String contentName, String interaction) {
+        ContentInteraction(MeasureHelper baseBuilder, String contentName, String interaction) {
             super(baseBuilder);
             mContentName = contentName;
             mInteraction = interaction;
@@ -431,9 +431,9 @@ public class TrackHelper {
 
         @Nullable
         @Override
-        public TrackMe build() {
+        public MeasureMe build() {
             if (TextUtils.isEmpty(mContentName) || TextUtils.isEmpty(mInteraction)) return null;
-            return new TrackMe(getBaseTrackMe())
+            return new MeasureMe(getBaseTrackMe())
                     .set(QueryParams.CONTENT_NAME, mContentName)
                     .set(QueryParams.CONTENT_PIECE, mContentPiece)
                     .set(QueryParams.CONTENT_TARGET, mContentTarget)
@@ -456,7 +456,7 @@ public class TrackHelper {
         private final int mGrandTotal;
         private EcommerceItems mEcommerceItems;
 
-        CartUpdate(TrackHelper baseBuilder, int grandTotal) {
+        CartUpdate(MeasureHelper baseBuilder, int grandTotal) {
             super(baseBuilder);
             mGrandTotal = grandTotal;
         }
@@ -471,9 +471,9 @@ public class TrackHelper {
 
         @Nullable
         @Override
-        public TrackMe build() {
+        public MeasureMe build() {
             if (mEcommerceItems == null) mEcommerceItems = new EcommerceItems();
-            return new TrackMe(getBaseTrackMe())
+            return new MeasureMe(getBaseTrackMe())
                     .set(QueryParams.GOAL_ID, 0)
                     .set(QueryParams.REVENUE, CurrencyFormatter.priceString(mGrandTotal))
                     .set(QueryParams.ECOMMERCE_ITEMS, mEcommerceItems.toJson());
@@ -501,7 +501,7 @@ public class TrackHelper {
         private Integer mTax;
         private Integer mSubTotal;
 
-        Order(TrackHelper baseBuilder, String orderId, int grandTotal) {
+        Order(MeasureHelper baseBuilder, String orderId, int grandTotal) {
             super(baseBuilder);
             mOrderId = orderId;
             mGrandTotal = grandTotal;
@@ -549,9 +549,9 @@ public class TrackHelper {
 
         @Nullable
         @Override
-        public TrackMe build() {
+        public MeasureMe build() {
             if (mEcommerceItems == null) mEcommerceItems = new EcommerceItems();
-            return new TrackMe(getBaseTrackMe())
+            return new MeasureMe(getBaseTrackMe())
                     .set(QueryParams.GOAL_ID, 0)
                     .set(QueryParams.ORDER_ID, mOrderId)
                     .set(QueryParams.REVENUE, CurrencyFormatter.priceString(mGrandTotal))
@@ -585,7 +585,7 @@ public class TrackHelper {
         private String mDescription;
         private boolean mIsFatal;
 
-        Exception(TrackHelper baseBuilder, Throwable throwable) {
+        Exception(MeasureHelper baseBuilder, Throwable throwable) {
             super(baseBuilder);
             mThrowable = throwable;
         }
@@ -608,17 +608,17 @@ public class TrackHelper {
 
         @Nullable
         @Override
-        public TrackMe build() {
+        public MeasureMe build() {
             String className;
             try {
                 StackTraceElement trace = mThrowable.getStackTrace()[0];
                 className = trace.getClassName() + "/" + trace.getMethodName() + ":" + trace.getLineNumber();
             } catch (java.lang.Exception e) {
-                Timber.tag(Tracker.LOGGER_TAG).w(e, "Couldn't get stack info");
+                Timber.tag(Measurer.LOGGER_TAG).w(e, "Couldn't get stack info");
                 className = mThrowable.getClass().getName();
             }
             String actionName = "exception/" + (mIsFatal ? "fatal/" : "") + (className + "/") + mDescription;
-            return new TrackMe(getBaseTrackMe())
+            return new MeasureMe(getBaseTrackMe())
                     .set(QueryParams.ACTION_NAME, actionName)
                     .set(QueryParams.EVENT_CATEGORY, "Exception")
                     .set(QueryParams.EVENT_ACTION, className)
@@ -641,9 +641,9 @@ public class TrackHelper {
     }
 
     public static class UncaughtExceptions {
-        private final TrackHelper mBaseBuilder;
+        private final MeasureHelper mBaseBuilder;
 
-        UncaughtExceptions(TrackHelper baseBuilder) {
+        UncaughtExceptions(MeasureHelper baseBuilder) {
             mBaseBuilder = baseBuilder;
         }
 
@@ -651,7 +651,7 @@ public class TrackHelper {
          * @param tracker the tracker that should receive the exception events.
          * @return returns the new (but already active) exception handler.
          */
-        public Thread.UncaughtExceptionHandler with(Tracker tracker) {
+        public Thread.UncaughtExceptionHandler with(Measurer tracker) {
             if (Thread.getDefaultUncaughtExceptionHandler() instanceof PiwikExceptionHandler) {
                 throw new RuntimeException("Trying to wrap an existing PiwikExceptionHandler.");
             }
@@ -663,7 +663,7 @@ public class TrackHelper {
 
     /**
      * This method will bind a tracker to your application,
-     * causing it to automatically track Activities with {@link #screen(Activity)} within your app.
+     * causing it to automatically measure Activities with {@link #screen(Activity)} within your app.
      *
      * @param app your app
      * @return the registered callback, you need this if you wanted to unregister the callback again
@@ -675,9 +675,9 @@ public class TrackHelper {
 
     public static class AppTracking {
         private final Application mApplication;
-        private final TrackHelper mBaseBuilder;
+        private final MeasureHelper mBaseBuilder;
 
-        public AppTracking(TrackHelper baseBuilder, Application application) {
+        public AppTracking(MeasureHelper baseBuilder, Application application) {
             mBaseBuilder = baseBuilder;
             mApplication = application;
         }
@@ -687,7 +687,7 @@ public class TrackHelper {
          * @return the registered callback, you need this if you wanted to unregister the callback again
          */
         @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-        public Application.ActivityLifecycleCallbacks with(final Tracker tracker) {
+        public Application.ActivityLifecycleCallbacks with(final Measurer tracker) {
             final Application.ActivityLifecycleCallbacks callback = new Application.ActivityLifecycleCallbacks() {
                 @Override
                 public void onActivityCreated(Activity activity, Bundle bundle) {

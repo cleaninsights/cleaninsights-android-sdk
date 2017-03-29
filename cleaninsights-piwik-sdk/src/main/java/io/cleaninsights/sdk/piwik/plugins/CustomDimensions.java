@@ -1,16 +1,16 @@
 package io.cleaninsights.sdk.piwik.plugins;
 
 import io.cleaninsights.sdk.piwik.Piwik;
-import io.cleaninsights.sdk.piwik.TrackMe;
+import io.cleaninsights.sdk.piwik.MeasureMe;
 
 import timber.log.Timber;
 
 /**
- * This plugins allows you to track any Custom Dimensions.
+ * This plugins allows you to measure any Custom Dimensions.
  * In order to use this functionality install and configure
  * https://plugins.piwik.org/CustomDimensions plugin.
  */
-public class CustomDimensions extends TrackMe {
+public class CustomDimensions extends MeasureMe {
     protected static final String LOGGER_TAG = Piwik.LOGGER_PREFIX + "CustomDimensions";
     /**
      * This method sets a tracking API parameter dimension%dimensionId%=%dimensionValue%.

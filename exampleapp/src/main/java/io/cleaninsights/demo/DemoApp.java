@@ -9,17 +9,17 @@ package io.cleaninsights.demo;
 
 import io.cleaninsights.sdk.piwik.PiwikApplication;
 
-import io.cleaninsights.sdk.InsightManager;
+import io.cleaninsights.sdk.CleanInsights;
 
 public class DemoApp extends PiwikApplication {
 
     @Override
-    public String getTrackerUrl() {
+    public String getMeasureUrl() {
         return "https://demo.cleaninsights.io";
     }
 
     @Override
-    public String getTrackerUrlCertificatePin ()
+    public String getMeasureUrlCertificatePin()
     {
         //generate your own using this tool: https://github.com/scottyab/ssl-pin-generator
         return "sha256/ZG+5y3w2mxstotmn15d9tnJtwss591+L6EH/yJMF41I=";
@@ -39,9 +39,9 @@ public class DemoApp extends PiwikApplication {
     private void initCleanInsights() {
 
         //First init CI
-        InsightManager cim = InsightManager.getInstance(this);
+        CleanInsights cim = CleanInsights.getInstance(this);
         cim.initPwiki(this);
 
-        getTracker().setApplicationDomain("demo.cleaninsights.io");
+        getMeasurer().setApplicationDomain("demo.cleaninsights.io");
     }
 }
