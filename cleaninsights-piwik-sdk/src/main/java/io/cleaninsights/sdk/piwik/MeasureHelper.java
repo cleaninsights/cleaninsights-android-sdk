@@ -185,7 +185,7 @@ public class MeasureHelper {
         @Nullable
         @Override
         public MeasureMe build() {
-            MeasureMe trackMe = new MeasureMe(getBaseTrackMe())
+            MeasureMe trackMe = new RandomizingMeasureMe(getBaseTrackMe())
                     .set(QueryParams.URL_PATH, mPath)
                     .set(QueryParams.EVENT_CATEGORY, mCategory)
                     .set(QueryParams.EVENT_ACTION, mAction)

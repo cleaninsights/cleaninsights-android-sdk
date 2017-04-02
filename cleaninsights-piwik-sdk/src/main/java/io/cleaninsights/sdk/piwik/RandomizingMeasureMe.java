@@ -11,6 +11,14 @@ public class RandomizingMeasureMe extends MeasureMe {
     };
     private static final String ENCODER_ID = "RandomizingMeasureMe";
 
+    public RandomizingMeasureMe() {
+        super();
+    }
+
+    public RandomizingMeasureMe(MeasureMe trackMe) {
+        super(trackMe);
+    }
+
     public synchronized MeasureMe set(@NonNull QueryParams key, String value) {
         set(key.toString(), value);
         return this;
