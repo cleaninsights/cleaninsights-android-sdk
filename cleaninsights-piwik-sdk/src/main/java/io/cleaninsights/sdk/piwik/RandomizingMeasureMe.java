@@ -5,11 +5,11 @@ import io.cleaninsights.sdk.rappor.Encoder;
 
 import java.nio.charset.StandardCharsets;
 
-public class RandomizedMeasureMe extends MeasureMe {
+public class RandomizingMeasureMe extends MeasureMe {
     private static final QueryParams[] RANDOMIZED_PARAMS = new QueryParams[] {
             QueryParams.EVENT_VALUE,
     };
-    private static final String ENCODER_ID = "RandomizedMeasureMe";
+    private static final String ENCODER_ID = "RandomizingMeasureMe";
 
     public synchronized MeasureMe set(@NonNull QueryParams key, String value) {
         set(key.toString(), value);
