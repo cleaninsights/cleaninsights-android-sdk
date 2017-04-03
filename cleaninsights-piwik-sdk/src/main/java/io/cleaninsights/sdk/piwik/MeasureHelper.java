@@ -139,7 +139,24 @@ public class MeasureHelper {
      * @return an object that allows addition of further details.
      */
     public EventBuilder event(@NonNull String category, @NonNull String action) {
-        return new EventBuilder(this, category, action);
+        return new EventBuilder(this, category, action, false);
+    }
+
+    /**
+     * Private Events are randomized before dispatching to server to enhance privacy. The default randomizing algorithm
+     * is RAPPOR.
+     *
+     * @param category (required) – this String defines the event category.
+     *                 You might define event categories based on the class of user actions,
+     *                 like clicks or gestures or voice commands, or you might define them based upon the
+     *                 features available in your application (play, pause, fast forward, etc.).
+     * @param action   (required) this String defines the specific event action within the category specified.
+     *                 In the example, we are basically saying that the category of the event is user clicks,
+     *                 and the action is a button click.
+     * @return an object that allows addition of further details.
+     */
+    public EventBuilder privateEvent(@NonNull String category, @NonNull String action) {
+        return new EventBuilder(this, category, action, true);
     }
 
     public static class EventBuilder extends BaseEvent {
@@ -148,11 +165,13 @@ public class MeasureHelper {
         private String mPath;
         private String mName;
         private Float mValue;
+        private boolean mRandomize;
 
-        EventBuilder(MeasureHelper builder, @NonNull String category, @NonNull String action) {
+        EventBuilder(MeasureHelper builder, @NonNull String category, @NonNull String action, boolean randomize) {
             super(builder);
             mCategory = category;
             mAction = action;
+            mRandomize = randomize;
         }
 
         /**
@@ -185,13 +204,21 @@ public class MeasureHelper {
         @Nullable
         @Override
         public MeasureMe build() {
-            MeasureMe trackMe = new RandomizingMeasureMe(getBaseTrackMe())
+            MeasureMe trackMe = buildMeasureMe()
                     .set(QueryParams.URL_PATH, mPath)
                     .set(QueryParams.EVENT_CATEGORY, mCategory)
                     .set(QueryParams.EVENT_ACTION, mAction)
                     .set(QueryParams.EVENT_NAME, mName);
             if (mValue != null) trackMe.set(QueryParams.EVENT_VALUE, mValue);
             return trackMe;
+        }
+
+        @NonNull
+        private MeasureMe buildMeasureMe() {
+            if (mRandomize) {
+                return new RandomizingMeasureMe(getBaseTrackMe());
+            }
+            return new MeasureMe(getBaseTrackMe());
         }
     }
 
