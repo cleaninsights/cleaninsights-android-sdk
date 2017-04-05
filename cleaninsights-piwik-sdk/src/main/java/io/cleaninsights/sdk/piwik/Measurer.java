@@ -12,11 +12,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
 import io.cleaninsights.sdk.piwik.dispatcher.Dispatcher;
+import io.cleaninsights.sdk.piwik.thresholds.BaseThreshold;
 import io.cleaninsights.sdk.piwik.tools.DeviceHelper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
@@ -69,6 +71,9 @@ public class Measurer {
     private long mSessionTimeout = 30 * 60 * 1000;
     private long mSessionStartTime;
 
+    //Add support for Thresholds
+    private ArrayList<BaseThreshold> mThresholds;
+
     /**
      * Use Piwik.newMeasurer() method to create new trackers
      *
@@ -95,6 +100,8 @@ public class Measurer {
         mCertPin = certPin;
 
         mDispatcher = new Dispatcher(mPiwik, mApiUrl, authToken, certPin);
+
+        mThresholds = new ArrayList<>();
 
         String userId = getSharedPreferences().getString(PREF_KEY_TRACKER_USERID, null);
         getSharedPreferences().edit().putString(PREF_KEY_TRACKER_USERID, userId).apply();
@@ -377,6 +384,23 @@ public class Measurer {
     private CountDownLatch mSessionStartLatch = new CountDownLatch(0);
 
     public Measurer measure(MeasureMe measureMe) {
+        
+        if (mThresholds.size() > 0) {
+
+            boolean allowMeasurement = false;
+
+            //first check our thresholds to ensure we are allowed to measure
+            for (BaseThreshold threshold : mThresholds) {
+                if (threshold.allowMeasurement()) {
+                    allowMeasurement = true;
+                } else if (threshold.isRequired()) //if measurement is not allowed, and is required
+                    return null; //do not measure at this time
+            }
+
+            if (!allowMeasurement)
+                return null;
+        }
+
         boolean newSession;
         synchronized (mSessionLock) {
             newSession = tryNewSession();
@@ -458,6 +482,16 @@ public class Measurer {
 
     protected String getApplicationBaseURL() {
         return String.format("http://%s", getApplicationDomain());
+    }
+
+    public void addThreshold (BaseThreshold threshold)
+    {
+        mThresholds.add(threshold);
+    }
+
+    public void removeThreshold (BaseThreshold threshold)
+    {
+        mThresholds.remove(threshold);
     }
 
     /**
