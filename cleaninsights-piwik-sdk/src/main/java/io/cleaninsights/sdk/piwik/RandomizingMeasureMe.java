@@ -1,33 +1,33 @@
 package io.cleaninsights.sdk.piwik;
 
 import android.support.annotation.NonNull;
+import com.google.common.io.BaseEncoding;
 import io.cleaninsights.sdk.rappor.Encoder;
 
-import java.nio.charset.StandardCharsets;
-
 public class RandomizingMeasureMe extends MeasureMe {
-    private static final QueryParams[] RANDOMIZED_PARAMS = new QueryParams[] {
-            QueryParams.EVENT_VALUE,
-    };
     private static final String ENCODER_ID = "RandomizingMeasureMe";
+    private static final String EVENT_ACTION_PREFIX = "randomized/";
 
-    public RandomizingMeasureMe() {
-        super();
-    }
+    private final Measurer mMeasurer;
 
-    public RandomizingMeasureMe(MeasureMe trackMe) {
+    public RandomizingMeasureMe(final MeasureMe trackMe, final Measurer measurer) {
         super(trackMe);
+        mMeasurer = measurer;
     }
 
     public synchronized MeasureMe set(@NonNull QueryParams key, String value) {
+        if (key == QueryParams.EVENT_ACTION) {
+            value = EVENT_ACTION_PREFIX + value;
+        }
         set(key.toString(), value);
         return this;
     }
 
     public synchronized MeasureMe set(@NonNull QueryParams key, int value) {
         final String stringValue;
-        if (requireRandomization(key)) {
-            stringValue = new String(createRandomizingEncoder().encodeOrdinal(value), StandardCharsets.ISO_8859_1);
+        if (key == QueryParams.EVENT_VALUE) {
+            key = QueryParams.EVENT_NAME;
+            stringValue = BaseEncoding.base64().encode(createRandomizingEncoder().encodeOrdinal(value));
         } else {
             stringValue = Integer.toString(value);
         }
@@ -36,7 +36,7 @@ public class RandomizingMeasureMe extends MeasureMe {
     }
 
     public synchronized MeasureMe set(@NonNull QueryParams key, float value) {
-        if (requireRandomization(key)) {
+        if (key == QueryParams.EVENT_VALUE) {
             set(key, Math.round(value));
         } else {
             set(key, Float.toString(value));
@@ -45,7 +45,7 @@ public class RandomizingMeasureMe extends MeasureMe {
     }
 
     public synchronized MeasureMe set(@NonNull QueryParams key, long value) {
-        if (requireRandomization(key)) {
+        if (key == QueryParams.EVENT_VALUE) {
             set(key, Long.valueOf(value).intValue());
         } else {
             set(key, Long.toString(value));
@@ -55,7 +55,7 @@ public class RandomizingMeasureMe extends MeasureMe {
 
     private Encoder createRandomizingEncoder() {
         // TODO: Choose appropriate parameters
-        return new Encoder(getUserSecret(),
+        return new Encoder(mMeasurer.getUserSecret(),
                 ENCODER_ID,
                 4096,
                 13.0 / 128.0,
@@ -63,19 +63,5 @@ public class RandomizingMeasureMe extends MeasureMe {
                 0.75,
                 1,
                 2);
-    }
-
-    private boolean requireRandomization(@NonNull QueryParams key) {
-        for (QueryParams randomizedParam : RANDOMIZED_PARAMS) {
-            if (randomizedParam == key) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // TODO: Remember the user secret
-    private byte[] getUserSecret() {
-        return new byte[32];
     }
 }

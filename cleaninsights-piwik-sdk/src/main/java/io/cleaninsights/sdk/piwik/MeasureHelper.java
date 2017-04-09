@@ -139,7 +139,7 @@ public class MeasureHelper {
      * @return an object that allows addition of further details.
      */
     public EventBuilder event(@NonNull String category, @NonNull String action) {
-        return new EventBuilder(this, category, action, false);
+        return new EventBuilder(this, category, action, false, null);
     }
 
     /**
@@ -155,8 +155,8 @@ public class MeasureHelper {
      *                 and the action is a button click.
      * @return an object that allows addition of further details.
      */
-    public EventBuilder privateEvent(@NonNull String category, @NonNull String action) {
-        return new EventBuilder(this, category, action, true);
+    public EventBuilder privateEvent(@NonNull String category, @NonNull String action, Float value, @NonNull Measurer tracker) {
+        return new EventBuilder(this, category, action, true, tracker).value(value);
     }
 
     public static class EventBuilder extends BaseEvent {
@@ -166,12 +166,14 @@ public class MeasureHelper {
         private String mName;
         private Float mValue;
         private boolean mRandomize;
+        @Nullable private Measurer mTracker;
 
-        EventBuilder(MeasureHelper builder, @NonNull String category, @NonNull String action, boolean randomize) {
+        EventBuilder(MeasureHelper builder, @NonNull String category, @NonNull String action, boolean randomize, @Nullable Measurer tracker) {
             super(builder);
             mCategory = category;
             mAction = action;
             mRandomize = randomize;
+            mTracker = tracker;
         }
 
         /**
@@ -216,7 +218,7 @@ public class MeasureHelper {
         @NonNull
         private MeasureMe buildMeasureMe() {
             if (mRandomize) {
-                return new RandomizingMeasureMe(getBaseTrackMe());
+                return new RandomizingMeasureMe(getBaseTrackMe(), mTracker);
             }
             return new MeasureMe(getBaseTrackMe());
         }

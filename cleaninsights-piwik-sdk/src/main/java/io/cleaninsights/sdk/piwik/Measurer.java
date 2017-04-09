@@ -11,12 +11,14 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 
+import com.google.common.io.BaseEncoding;
 import io.cleaninsights.sdk.piwik.dispatcher.Dispatcher;
 import io.cleaninsights.sdk.piwik.thresholds.BaseThreshold;
 import io.cleaninsights.sdk.piwik.tools.DeviceHelper;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.cleaninsights.sdk.rappor.Encoder;
 import timber.log.Timber;
 
 /**
@@ -46,6 +49,7 @@ public class Measurer {
     protected static final String PREF_KEY_TRACKER_FIRSTVISIT = "tracker.firstvisit";
     protected static final String PREF_KEY_TRACKER_VISITCOUNT = "tracker.visitcount";
     protected static final String PREF_KEY_TRACKER_PREVIOUSVISIT = "tracker.previousvisit";
+    protected static final String PREF_KEY_TRACKER_RAPPOR_USERSECRET = "tracker.rappor.userSecret";
 
     private final Piwik mPiwik;
 
@@ -463,6 +467,21 @@ public class Measurer {
 
     public SharedPreferences getSharedPreferences() {
         return mPiwik.getSharedPreferences();
+    }
+
+    // TODO: Remember the user secret
+    public byte[] getUserSecret() {
+        byte[] userSecret;
+        String userSecretString = getSharedPreferences().getString(PREF_KEY_TRACKER_RAPPOR_USERSECRET, null);
+        if (userSecretString == null) {
+            userSecret = new byte[Encoder.MIN_USER_SECRET_BYTES];
+            new SecureRandom().nextBytes(userSecret);
+            userSecretString = BaseEncoding.base64().encode(userSecret);
+        } else {
+            userSecret = BaseEncoding.base64().decode(userSecretString);
+        }
+        getSharedPreferences().edit().putString(PREF_KEY_TRACKER_RAPPOR_USERSECRET, userSecretString).apply();
+        return userSecret;
     }
 
     @Override

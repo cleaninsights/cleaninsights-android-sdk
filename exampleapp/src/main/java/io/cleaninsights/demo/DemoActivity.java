@@ -41,6 +41,8 @@ public class DemoActivity extends ActionBarActivity {
 
     private CardContainer mCardContainer;
 
+    private int mLikeCount = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +63,7 @@ public class DemoActivity extends ActionBarActivity {
             card.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
                 @Override
                 public void onLike() {
+                    mLikeCount++;
                     MeasureHelper.track()
                             .screen("/vote/cat/like/" + imgIdx)
                             .title("Vote")
@@ -82,6 +85,8 @@ public class DemoActivity extends ActionBarActivity {
         }
 
         mCardContainer.setAdapter(adapter);
+
+        mLikeCount = 0;
 
         new ConsentUI().showConsentDialog(this);
 
@@ -112,6 +117,14 @@ public class DemoActivity extends ActionBarActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MeasureHelper.track().privateEvent("Vote", "Like per Session", Integer.valueOf(mLikeCount).floatValue(), getTracker())
+                .with(getTracker());
+        ((CleanInsightsApplication)getApplication()).getMeasurer().dispatch();
     }
 
     /**
