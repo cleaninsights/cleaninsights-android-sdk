@@ -10,6 +10,7 @@ services:
     image: piwik
     volumes:
       - ./config:/var/www/html/config
+      - ./CleanInsights:/var/www/html/plugins/CleanInsights
       - web:/var/www/html
   web:
     image: nginx
