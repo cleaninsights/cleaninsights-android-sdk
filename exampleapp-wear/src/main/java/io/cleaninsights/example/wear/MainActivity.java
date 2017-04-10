@@ -1,6 +1,16 @@
 package io.cleaninsights.example.wear;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.wearable.activity.WearableActivity;
 import android.support.wearable.view.BoxInsetLayout;
 import android.view.View;
@@ -21,8 +31,12 @@ public class MainActivity extends WearableActivity {
             new SimpleDateFormat("HH:mm", Locale.US);
 
     private BoxInsetLayout mContainerView;
-    private Button mVoteDogs, mVoteCats;
     private TextView mClockView;
+
+    private SensorManager mSensorManager;
+
+    private int mFeelHealthy = 0;
+    private int mFeelSick = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,32 +45,133 @@ public class MainActivity extends WearableActivity {
         setAmbientEnabled();
 
         mContainerView = (BoxInsetLayout) findViewById(R.id.container);
-        mVoteDogs = (Button) findViewById(R.id.btnVoteDog);
-        mVoteCats = (Button) findViewById(R.id.btnVoteCat);
 
         mClockView = (TextView) findViewById(R.id.clock);
+
+        if (askForPermission(Manifest.permission.BODY_SENSORS,1))
+            initSensors();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        //permission granted I assume?
+        initSensors ();
+
+    }
+
+
+    private boolean askForPermission(String permission, Integer requestCode) {
+
+        /**
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+
+                //This is called if user has denied the permission before
+                //In this case I am just asking the permission again
+                ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
+
+            } else {
+
+                ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
+            }
+
+            return false;
+        } else {
+
+            return true;
+        }**/
+
+        return true;
+    }
+
+
+    private void initSensors ()
+    {
+        mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        Sensor heartRateSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_HEART_RATE);
+
+        if (heartRateSensor != null) {
+            mSensorManager.registerListener(new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+
+                    //sensorEvent.sensor.getType(), sensorEvent.accuracy, sensorEvent.timestamp, sensorEvent.values;
+
+                    float[] heartRate = sensorEvent.values;
+
+                    MeasureHelper.track().privateEvent("Feels", "heartRate", heartRate[0], getTracker())
+                            .with(getTracker());
+
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
+
+                }
+            }, heartRateSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
+        Sensor stepSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+        if (stepSensor != null) {
+            mSensorManager.registerListener(new SensorEventListener() {
+                @Override
+                public void onSensorChanged(SensorEvent sensorEvent) {
+
+                    //sensorEvent.sensor.getType(), sensorEvent.accuracy, sensorEvent.timestamp, sensorEvent.values;
+
+                    float[] steps = sensorEvent.values;
+
+                    MeasureHelper.track().privateEvent("Feels", "steps", steps[0], getTracker())
+                            .with(getTracker());
+                }
+
+                @Override
+                public void onAccuracyChanged(Sensor sensor, int i) {
+
+                }
+            }, stepSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        }
+
     }
 
     private Measurer getTracker() {
         return ((CleanInsightsApplication) getApplication()).getMeasurer();
     }
 
-    public void voteDogs (View view)
+    public void tappedHealthy (View view)
     {
-        MeasureHelper.track()
-                .screen("/vote/dog/like/1")
-                .title("Vote")
-                .variable(1, "dog", "1")
-                .with(getTracker());
+        mFeelHealthy++;
     }
 
-    public void voteCats (View view)
+    public void tappedSick (View view)
     {
-        MeasureHelper.track()
-                .screen("/vote/cat/like/1")
-                .title("Vote")
-                .variable(1, "cat", "1")
+        mFeelSick++;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //when the app pauses do a private, randomized-response based tracking of the number of likes
+        MeasureHelper.track().privateEvent("Feels", "Healthy per Session", Integer.valueOf(mFeelHealthy).floatValue(), getTracker())
                 .with(getTracker());
+
+        MeasureHelper.track().privateEvent("Feels", "Sick per Session", Integer.valueOf(mFeelSick).floatValue(), getTracker())
+                .with(getTracker());
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        //dispatch the current set of events to the server
+        ((CleanInsightsApplication)getApplication()).getMeasurer().dispatch();
     }
 
     @Override

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Clean Insights Example Wear App</string>
     <string name="hello_world">Hello World!</string>
-    <string name="vote_dogs">Dogs Rule!</string>
-    <string name="vote_cats">Cats Rule!</string>
+    <string name="feel_healthy">Feel Healthy</string>
+    <string name="feel_sick">Feel Sick</string>
 
 </resources>

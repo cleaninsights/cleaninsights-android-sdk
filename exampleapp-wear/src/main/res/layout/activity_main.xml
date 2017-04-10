@@ -6,10 +6,10 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     tools:context="io.cleaninsights.example.wear.MainActivity" tools:deviceIds="wear">
 
-    <Button android:id="@+id/btnVoteDog" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/vote_dogs" app:layout_box="all" android:onClick="voteDogs" />
-    <Button android:id="@+id/btnVoteCat" android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/vote_cats" app:layout_box="all" android:layout_gravity="bottom|start" android:onClick="voteCats"/>
+    <Button android:id="@+id/btnFeelHealthy" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/feel_healthy" app:layout_box="all" android:onClick="tappedHealthy" />
+    <Button android:id="@+id/btnFeelSick" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/feel_sick" app:layout_box="all" android:layout_gravity="bottom|start" android:onClick="tappedSick"/>
 
     <TextView android:id="@+id/clock" android:layout_width="wrap_content" android:layout_height="wrap_content"
         android:layout_gravity="bottom|start" android:textColor="@android:color/white"
