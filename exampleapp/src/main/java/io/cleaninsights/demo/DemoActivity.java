@@ -11,33 +11,23 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 
 import com.andtinder.model.CardModel;
 import com.andtinder.model.Orientations;
 import com.andtinder.view.CardContainer;
 import com.andtinder.view.SimpleCardStackAdapter;
 
-import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import io.cleaninsights.sdk.piwik.MeasureHelper;
 import io.cleaninsights.sdk.piwik.Measurer;
-import io.cleaninsights.sdk.piwik.ecommerce.EcommerceItems;
 
-import java.util.Arrays;
-import java.util.List;
-
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.cleaninsights.sdk.consent.ConsentUI;
 
 
-public class DemoActivity extends ActionBarActivity {
-
+public class DemoActivity extends AppCompatActivity {
 
     private CardContainer mCardContainer;
 
@@ -63,7 +53,11 @@ public class DemoActivity extends ActionBarActivity {
             card.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
                 @Override
                 public void onLike() {
+
+                    //this is the total like counter for our privacy-enhanced "randomized response" tracking later in onPause()
                     mLikeCount++;
+
+                    //this is typical event tracked, but shared with the server in a secure, non-unique identified manner
                     MeasureHelper.track()
                             .screen("/vote/cat/like/" + imgIdx)
                             .title("Vote")
@@ -73,6 +67,8 @@ public class DemoActivity extends ActionBarActivity {
 
                 @Override
                 public void onDislike() {
+
+                    //this is typical event tracked, but shared with the server in a secure, non-unique identified manner
                     MeasureHelper.track()
                             .screen("/vote/cat/dislike" + imgIdx)
                             .title("Vote")
@@ -122,8 +118,12 @@ public class DemoActivity extends ActionBarActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        //when the app pauses do a private, randomized-response based tracking of the number of likes
         MeasureHelper.track().privateEvent("Vote", "Like per Session", Integer.valueOf(mLikeCount).floatValue(), getTracker())
                 .with(getTracker());
+
+        //dispatch the current set of events to the server
         ((CleanInsightsApplication)getApplication()).getMeasurer().dispatch();
     }
 
