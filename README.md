@@ -43,15 +43,19 @@ Integrating Clean Insights with Piwik into your Android app
 
 
 ### Include library
+j
 Add this to your apps build.gradle file:
 
 ```groovy
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+
 dependencies {
-    repositories {
-        jcenter()
-    }
-    // ...
-    compile 'io.cleaninsights:cleaninsights-android-sdk:1.0.0'
+	compile 'com.github.User:Repo:Tag'
 }
 ```
 
