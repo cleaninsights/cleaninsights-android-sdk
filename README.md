@@ -55,7 +55,7 @@ allprojects {
 }
 
 dependencies {
-	compile 'com.github.User:Repo:Tag'
+        compile 'com.github.cleaninsights:cleaninsights-android-sdk:-SNAPSHOT'
 }
 ```
 
