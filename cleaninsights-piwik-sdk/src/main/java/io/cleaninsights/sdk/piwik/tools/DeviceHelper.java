@@ -50,7 +50,6 @@ public class DeviceHelper {
      * @return well formatted user agent
      */
     public static String getUserAgent() {
-       // return System.getProperty("http.agent");
         return CI_USER_AGENT;
     }
 
@@ -64,9 +63,8 @@ public class DeviceHelper {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     public static int[] getResolution(Context context) {
 
-        int width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT;
-
         //let's remove specifics about display for now! maybe we can do something DP here?
+        int width = DEFAULT_WIDTH, height = DEFAULT_HEIGHT;
 
         /**
         Display display;
