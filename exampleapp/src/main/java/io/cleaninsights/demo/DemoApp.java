@@ -45,7 +45,6 @@ public class DemoApp extends CleanInsightsApplication {
 
         getMeasurer().setApplicationDomain("demo.cleaninsights.io");
 
-        OrbotHelper.get(this).init();
 
     }
 }
