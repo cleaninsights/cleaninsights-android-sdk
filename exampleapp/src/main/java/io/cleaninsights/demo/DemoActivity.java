@@ -62,7 +62,7 @@ public class DemoActivity extends AppCompatActivity {
                             .screen("/vote/cat/like/" + imgIdx)
                             .title("Vote")
                             .variable(1, "option", imgIdx + "")
-                            .with(getTracker());
+                            .with(getMeasurer());
                 }
 
                 @Override
@@ -73,7 +73,7 @@ public class DemoActivity extends AppCompatActivity {
                             .screen("/vote/cat/dislike" + imgIdx)
                             .title("Vote")
                             .variable(1, "option", imgIdx + "")
-                            .with(getTracker());
+                            .with(getMeasurer());
                 }
             });
 
@@ -89,7 +89,7 @@ public class DemoActivity extends AppCompatActivity {
 
     }
 
-    private Measurer getTracker() {
+    private Measurer getMeasurer() {
         return ((CleanInsightsApplication) getApplication()).getMeasurer();
     }
 
@@ -120,8 +120,8 @@ public class DemoActivity extends AppCompatActivity {
         super.onPause();
 
         //when the app pauses do a private, randomized-response based tracking of the number of likes
-        MeasureHelper.track().privateEvent("Vote", "Like per Session", Integer.valueOf(mLikeCount).floatValue(), getTracker())
-                .with(getTracker());
+        MeasureHelper.track().privateEvent("Vote", "Like per Session", Integer.valueOf(mLikeCount).floatValue(), getMeasurer())
+                .with(getMeasurer());
 
         //dispatch the current set of events to the server
         ((CleanInsightsApplication)getApplication()).getMeasurer().dispatch();

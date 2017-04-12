@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="io.cleaninsights.demo"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="io.cleaninsights.demo">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+
 
     <application
         android:name=".DemoApp"
@@ -19,9 +22,9 @@
             android:label="@string/app_name"
             android:launchMode="singleInstance">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -32,8 +35,12 @@
             android:parentActivityName=".DemoActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".DemoActivity"/>
+                android:value=".DemoActivity" />
         </activity>
+        <activity
+            android:name=".ThresholdActivity"
+            android:label="@string/title_activity_threshold"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
