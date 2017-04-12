@@ -1,1 +1,1 @@
-include ':exampleapp', ':cleaninsights-piwik-sdk', ':exampleapp-wear'
+include ':exampleapp', ':cleaninsights-piwik-sdk', ':exampleapp-wear', ':exampleapp-television'
