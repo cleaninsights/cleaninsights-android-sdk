@@ -9,7 +9,7 @@ group='com.github.cleaninsights'
 
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 2
+def versionPatch = 3
 def myVersionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
 def myVersionName = "${versionMajor}.${versionMinor}.${versionPatch}"
 
@@ -38,12 +38,12 @@ ext {
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion 25
+    buildToolsVersion "25"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 25
         versionCode myVersionCode
         versionName myVersionName
     }
