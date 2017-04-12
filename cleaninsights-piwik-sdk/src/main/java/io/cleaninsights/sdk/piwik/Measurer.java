@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -108,9 +109,11 @@ public class Measurer {
         mThresholds = new ArrayList<>();
 
         String userId = getSharedPreferences().getString(PREF_KEY_TRACKER_USERID, null);
-        getSharedPreferences().edit().putString(PREF_KEY_TRACKER_USERID, userId).apply();
 
-        getDefaultTrackMe().set(QueryParams.USER_ID, userId);
+        if (userId != null) {
+            //getSharedPreferences().edit().putString(PREF_KEY_TRACKER_USERID, userId).apply();
+            getDefaultTrackMe().set(QueryParams.USER_ID, userId);
+        }
 
         getDefaultTrackMe().set(QueryParams.SESSION_START, DEFAULT_TRUE_VALUE);
 
@@ -124,6 +127,8 @@ public class Measurer {
         getDefaultTrackMe().set(QueryParams.USER_AGENT, DeviceHelper.getUserAgent());
         getDefaultTrackMe().set(QueryParams.LANGUAGE, DeviceHelper.getUserLanguage());
         getDefaultTrackMe().set(QueryParams.COUNTRY, DeviceHelper.getUserCountry());
+
+        //we generate a visitor ID that is unique for the session only
         getDefaultTrackMe().set(QueryParams.VISITOR_ID, makeRandomVisitorId());
     }
 
@@ -440,8 +445,7 @@ public class Measurer {
     }
 
     public static String makeRandomVisitorId() {
-        //return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 16);
-        return "ffffffffffffffff";// 16 digit hexadecimal
+        return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 16);
 
     }
 
