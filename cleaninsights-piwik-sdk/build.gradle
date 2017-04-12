@@ -3,6 +3,9 @@ def gitSha() {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.cleaninsights'
 
 def versionMajor = 1
 def versionMinor = 0
@@ -39,7 +42,7 @@ android {
     buildToolsVersion '25'
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode myVersionCode
         versionName myVersionName
