@@ -17,7 +17,6 @@ import java.net.URL;
 /**
  * Data that can be send to the backend API via the Dispatcher
  */
-@VisibleForTesting
 public class Packet {
     private final URL mTargetURL;
     private final JSONObject mJSONObject;

@@ -17,12 +17,16 @@ import com.squareup.tape2.QueueFile;
 import org.json.JSONObject;
 
 import info.guardianproject.netcipher.client.StrongOkHttpClientBuilder;
+import io.cleaninsights.sdk.CleanInsights;
 import io.cleaninsights.sdk.piwik.Piwik;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -65,6 +69,7 @@ public class Dispatcher {
     private final URL mApiUrl;
     private final String mAuthToken;
     private final String mCertPin;
+    private Proxy mProxy;
 
     private List<Packet> mDryRunOutput = Collections.synchronizedList(new ArrayList<Packet>());
     public static final int DEFAULT_CONNECTION_TIMEOUT = 5 * 1000;  // 5s
@@ -79,6 +84,16 @@ public class Dispatcher {
         mApiUrl = apiUrl;
         mAuthToken = authToken;
         mCertPin = certPin;
+
+
+        mProxy = Proxy.NO_PROXY;
+
+        if (CleanInsights.getInstance(mPiwik.getContext()).isTorEnabled())
+        {
+            int proxyPort = CleanInsights.getInstance(mPiwik.getContext()).getTorHttpPort();
+            mProxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1",proxyPort));
+        }
+
 
         try {
             File fileQueue = new File(piwik.getContext().getCacheDir(), DEFAULT_QUEUE_FILE);
@@ -250,12 +265,14 @@ public class Dispatcher {
                         .build();
 
                     client = new OkHttpClient.Builder()
+                            .proxy(mProxy)
                         .certificatePinner(certificatePinner)
                         .build();
             }
             else
             {
                 client = new OkHttpClient.Builder()
+                        .proxy(mProxy)
                         .build();
             }
 

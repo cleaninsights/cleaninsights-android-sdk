@@ -1,7 +1,10 @@
 package io.cleaninsights.sdk;
 
 import android.content.Context;
+import android.content.Intent;
 
+import info.guardianproject.netcipher.proxy.OrbotHelper;
+import info.guardianproject.netcipher.proxy.StatusCallback;
 import io.cleaninsights.sdk.piwik.DownloadInsight;
 import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import io.cleaninsights.sdk.piwik.MeasureHelper;
@@ -16,6 +19,10 @@ public class CleanInsights {
     public final static String TAG = "CleanInsights";
 
     private static CleanInsights mInstance = null;
+
+    private boolean mTorEnabled = false;
+    private int mTorSocksPort = -1;
+    private int mTorHttpPort = -1;
 
     private CleanInsights(Context context)
     {
@@ -39,9 +46,66 @@ public class CleanInsights {
 
     private void initNetCipher (Context context)
     {
-       // OrbotHelper.get(context).init();
+        //check if Orbot/Tor is installed, and if so initialize settings
+        OrbotHelper orbotHelper = OrbotHelper.get(context);
+
+        orbotHelper.addStatusCallback(new StatusCallback() {
+            @Override
+            public void onEnabled(Intent intent) {
+
+                mTorEnabled = true;
+
+                String status = intent.getStringExtra(OrbotHelper.EXTRA_STATUS);
+                mTorSocksPort = intent.getIntExtra(OrbotHelper.EXTRA_PROXY_PORT_SOCKS,-1);
+                mTorHttpPort = intent.getIntExtra(OrbotHelper.EXTRA_PROXY_PORT_HTTP,-1);
+            }
+
+            @Override
+            public void onStarting() {
+
+            }
+
+            @Override
+            public void onStopping() {
+
+            }
+
+            @Override
+            public void onDisabled() {
+                mTorEnabled = false;
+            }
+
+            @Override
+            public void onStatusTimeout() {
+
+            }
+
+            @Override
+            public void onNotYetInstalled() {
+
+            }
+        });
+
+        orbotHelper.init();
+
 
     }
+
+    public boolean isTorEnabled ()
+    {
+        return mTorEnabled;
+    }
+
+    public int getTorSocksPort ()
+    {
+        return mTorSocksPort;
+    }
+
+    public int getTorHttpPort ()
+    {
+        return mTorHttpPort;
+    }
+
 
     /**
     public static void getStrongBuilder (Context context, URL url, StrongBuilder.Callback callback)
@@ -68,15 +132,6 @@ public class CleanInsights {
 
         // When working on an app we don't want to skew tracking results.
         app.getPiwik().setDryRun(BuildConfig.DEBUG);
-
-        // If you want to set a specific userID other than the random UUID token, do it NOW to ensure all future actions use that token.
-        // Changing it later will measure new events as belonging to a different user.
-        // String userEmail = ....preferences....getString
-
-        // getMeasurer().setApplicationDomain();
-        //app.getMeasurer().setVisitCustomVariable(0, "foo","blat");
-        //app.getMeasurer().setVisitCustomVariable(1, "bar","blat");
-        //app.getMeasurer().setUserId("anonymous");
 
         // Track this app install, this will only trigger once per app version.
         // i.e. "http://com.piwik.demo:1/185DECB5CFE28FDB2F45887022D668B4"
