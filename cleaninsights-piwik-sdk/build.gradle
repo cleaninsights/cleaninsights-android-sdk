@@ -3,7 +3,7 @@ def gitSha() {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.github.dcendents.android-maven'
 
 group='com.github.cleaninsights'
 
@@ -23,27 +23,27 @@ ext {
 
     libraryDescription = 'Clean Insights SDK for Android based on Piwik '
 
-    siteUrl = 'https://github.com/berkmancenter/analyzethis'
-    gitUrl = 'https://github.com/berkmancenter/analyzethis.git'
+    siteUrl = 'https://cleaninsights.org'
+    gitUrl = 'https://gitlab.com/cleaninsights/clean-insights-android-sdk.git'
 
     libraryVersion = myVersionName
 
     developerId = 'cleaninsights'
     developerName = 'Clean Insights'
-    developerEmail = 'info@cleaninsights.io'
+    developerEmail = 'support@guardianproject.info'
 
     licenseName = 'TBD'
-    licenseUrl = 'https://github.com/berkmancenter/analyzethis/blob/master/LICENSE'
+    licenseUrl = 'https://gitlab.com/cleaninsights/clean-insights-android-sdk/-/blob/master/LICENSE'
     allLicenses = ["TBD"]
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode myVersionCode
         versionName myVersionName
     }
@@ -55,36 +55,36 @@ dependencies {
         jcenter()
     }
 
-    compile 'com.android.support:support-annotations:25.0.0'
-    compile 'com.jakewharton.timber:timber:4.1.2'
-    compile group: 'com.google.guava', name: 'guava', version: '20.0'
-    compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.1'
+    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'com.jakewharton.timber:timber:4.5.1'
+    implementation group: 'com.google.guava', name: 'guava', version: '24.1-jre'
+    implementation group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
     //GuardianProject NetCipher to support network obfuscation, and strong TLS configuration
     //compile 'info.guardianproject.netcipher:netcipher:2.0.0-alpha1'
 
     //Supporting pinning!
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.0'
 
     //network hardening and onion routing
-    compile 'info.guardianproject.netcipher:netcipher:2.0.0-alpha1'
-    compile 'info.guardianproject.netcipher:netcipher-okhttp3:2.0.0-alpha1'
+    implementation 'info.guardianproject.netcipher:netcipher:2.1.0'
+    implementation 'info.guardianproject.netcipher:netcipher-okhttp3:2.0.0-alpha1'
 
     //SweetAlerts make dialog boxes so much more friendly and fun
-    compile 'cn.pedant.sweetalert:library:1.3'
+    implementation 'cn.pedant.sweetalert:library:1.3'
 
     //SquareUp Tape library, for QueueFile
-    compile 'com.squareup.tape2:tape:2.0.0-SNAPSHOT'
+    implementation 'com.squareup.tape2:tape:2.0.0-SNAPSHOT'
 
     // Espresso
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.0')
-    androidTestCompile('com.android.support.test:testing-support-lib:0.1')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.2')
+    androidTestImplementation('com.android.support.test:testing-support-lib:0.1')
     // Robolectric
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.hamcrest:hamcrest-core:1.3'
-    testCompile 'org.hamcrest:hamcrest-library:1.3'
-    testCompile 'org.hamcrest:hamcrest-integration:1.3'
-    testCompile('org.robolectric:robolectric:2.4') {
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'org.hamcrest:hamcrest-core:1.3'
+    testImplementation 'org.hamcrest:hamcrest-library:1.3'
+    testImplementation 'org.hamcrest:hamcrest-integration:1.3'
+    testImplementation('org.robolectric:robolectric:3.3.2') {
         exclude module: 'classworlds'
         exclude module: 'commons-logging'
         exclude module: 'httpclient'
@@ -161,28 +161,6 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
 coveralls {
     jacocoReportPath = 'build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml'
     sourceDirs = ['src/main/java']
-}
-
-/**
- * Javadoc
- */
-android.libraryVariants.all { variant ->
-    task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
-        title = "Documentation for Android $android.defaultConfig.versionName b$android.defaultConfig.versionCode"
-        destinationDir = new File("${project.getProjectDir()}/build/docs/javadoc/")
-        source = variant.javaCompile.source
-
-        ext.androidJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
-        classpath = files(variant.javaCompile.classpath.files) + files(ext.androidJar)
-
-        description "Generates Javadoc for $variant.name."
-
-        options.memberLevel = JavadocMemberLevel.PRIVATE
-        options.links("http://docs.oracle.com/javase/7/docs/api/");
-        options.links("http://developer.android.com/reference/reference/");
-        exclude '**/BuildConfig.java'
-        exclude '**/R.java'
-    }
 }
 
 //apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
