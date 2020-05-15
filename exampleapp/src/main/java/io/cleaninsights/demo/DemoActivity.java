@@ -50,10 +50,10 @@ public class DemoActivity extends AppCompatActivity {
         for (int i = 0; i < 20; i++) {
             final int imgIdx = imgIds[(int)(Math.random()*((float)imgIds.length))];
             CardModel card = new CardModel("Option " + (i+1), "Swipe left to like, right to not", r.getDrawable(imgIdx));
-            card.setOnCardDimissedListener(new CardModel.OnCardDimissedListener() {
+
+            card.setOnCardDismissedListener(new CardModel.OnCardDismissedListener() {
                 @Override
                 public void onLike() {
-
                     //this is the total like counter for our privacy-enhanced "randomized response" tracking later in onPause()
                     mLikeCount++;
 
@@ -76,6 +76,7 @@ public class DemoActivity extends AppCompatActivity {
                             .with(getMeasurer());
                 }
             });
+
 
             adapter.add(card);
         }

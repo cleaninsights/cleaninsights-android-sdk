@@ -19,13 +19,14 @@ android {
 
 dependencies {
     repositories {
-        jcenter()
+        maven { url 'https://jitpack.io' }
     }
+
     implementation project(':cleaninsights-piwik-sdk')
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.jakewharton:butterknife:8.5.1'
-    implementation 'com.github.kikoso:SwipeableCards:1.1-RELEASE@aar'
+    implementation 'com.github.kikoso:Swipeable-Cards:0.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.1.0'
 }
