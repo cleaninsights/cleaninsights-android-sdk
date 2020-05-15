@@ -1,6 +1,8 @@
 package io.cleaninsights.sdk.piwik;
 
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.google.common.io.BaseEncoding;
 import io.cleaninsights.sdk.rappor.Encoder;
 

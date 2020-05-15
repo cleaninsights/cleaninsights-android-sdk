@@ -8,9 +8,11 @@
 package io.cleaninsights.sdk.piwik;
 
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.BaseEncoding;
 import io.cleaninsights.sdk.piwik.dispatcher.Dispatcher;
 import io.cleaninsights.sdk.piwik.thresholds.BaseThreshold;

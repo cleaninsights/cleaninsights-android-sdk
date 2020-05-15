@@ -8,10 +8,10 @@
 package io.cleaninsights.sdk.piwik.dispatcher;
 
 import android.os.Process;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.common.annotations.VisibleForTesting;
 import com.squareup.tape2.QueueFile;
 
 import org.json.JSONObject;

@@ -10,10 +10,10 @@ package io.cleaninsights.demo;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.andtinder.model.CardModel;
 import com.andtinder.model.Orientations;

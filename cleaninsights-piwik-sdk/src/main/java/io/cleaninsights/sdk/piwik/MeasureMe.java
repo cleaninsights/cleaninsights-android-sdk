@@ -7,8 +7,9 @@
 
 package io.cleaninsights.sdk.piwik;
 
-import android.support.annotation.NonNull;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 

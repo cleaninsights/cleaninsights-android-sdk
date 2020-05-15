@@ -19,8 +19,6 @@ import android.widget.EditText;
 import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 import io.cleaninsights.sdk.piwik.MeasureHelper;
 
-import timber.log.Timber;
-
 public class SettingsActivity extends Activity {
 
     private void refreshUI(final Activity settingsActivity) {
@@ -67,7 +65,7 @@ public class SettingsActivity extends Activity {
                             ((CleanInsightsApplication) getApplication()).getMeasurer()
                                     .setDispatchInterval(interval);
                         } catch (NumberFormatException e) {
-                            Timber.d("not a number: %s", charSequence.toString());
+                            //Timber.d("not a number: %s", charSequence.toString());
                         }
                     }
 
@@ -98,7 +96,7 @@ public class SettingsActivity extends Activity {
                                     .setSessionTimeout(timeoutMin * 60);
                         } catch (NumberFormatException e) {
                             ((EditText) settingsActivity.findViewById(R.id.sessionTimeoutInput)).setText("30");
-                            Timber.d("not a number: %s", charSequence.toString());
+                            //Timber.d("not a number: %s", charSequence.toString());
                         }
                     }
 

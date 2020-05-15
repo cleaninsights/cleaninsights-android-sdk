@@ -7,7 +7,6 @@
 
 package io.cleaninsights.demo;
 
-import info.guardianproject.netcipher.proxy.OrbotHelper;
 import io.cleaninsights.sdk.piwik.CleanInsightsApplication;
 
 import io.cleaninsights.sdk.CleanInsights;
