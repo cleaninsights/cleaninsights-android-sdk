@@ -42,7 +42,6 @@ public class DemoApp extends CleanInsightsApplication {
         CleanInsights cim = CleanInsights.getInstance(this);
         cim.initPwiki(this);
 
-        getMeasurer().setApplicationDomain("metrics.cleaninsights.org");
 
     }
 }

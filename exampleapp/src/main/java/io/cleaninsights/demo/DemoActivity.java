@@ -12,6 +12,8 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -85,7 +87,14 @@ public class DemoActivity extends AppCompatActivity {
 
         mLikeCount = 0;
 
-        new ConsentUI().showConsentDialog(this);
+        new ConsentUI().showConsentDialog(this, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getMeasurer().setApplicationDomain("metrics.cleaninsights.org");
+
+                Toast.makeText(DemoActivity.this,"Thanks.... more soon!",Toast.LENGTH_LONG).show();
+            }
+        });
 
 
     }

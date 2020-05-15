@@ -3,6 +3,9 @@ def gitSha() {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 //apply plugin: 'com.github.dcendents.android-maven'
 
 group='com.github.cleaninsights'
@@ -55,6 +58,8 @@ dependencies {
         jcenter()
     }
 
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
     implementation 'androidx.annotation:annotation:1.1.0'
 
     implementation 'com.jakewharton.timber:timber:4.5.1'
@@ -73,6 +78,9 @@ dependencies {
 
     //SquareUp Tape library, for QueueFile
     implementation 'com.squareup.tape2:tape:2.0.0-SNAPSHOT'
+
+    //ui
+    implementation 'com.tapadoo.android:alerter:5.1.2'
 
     // Espresso
     androidTestImplementation('androidx.test.espresso:espresso-core:3.2.0')
