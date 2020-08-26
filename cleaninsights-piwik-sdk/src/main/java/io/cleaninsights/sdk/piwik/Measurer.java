@@ -93,13 +93,13 @@ public class Measurer {
     protected Measurer(@NonNull final String url, int siteId, String authToken, String certPin, @NonNull Piwik piwik) throws MalformedURLException {
 
         String checkUrl = url;
-        if (checkUrl.endsWith("piwik.php") || checkUrl.endsWith("piwik-proxy.php")) {
+        if (checkUrl.endsWith("matomo.php") || checkUrl.endsWith("matomo-proxy.php")) {
             mApiUrl = new URL(checkUrl);
         } else {
             if (!checkUrl.endsWith("/")) {
                 checkUrl += "/";
             }
-            mApiUrl = new URL(checkUrl + "piwik.php");
+            mApiUrl = new URL(checkUrl + "matomo.php");
         }
         mPiwik = piwik;
         mSiteId = siteId;

@@ -15,19 +15,19 @@ public class DemoApp extends CleanInsightsApplication {
 
     @Override
     public String getMeasureUrl() {
-        return "https://demo.cleaninsights.io";
+        return "https://metrics.cleaninsights.org/";
     }
 
     @Override
     public String getMeasureUrlCertificatePin()
     {
         //generate your own using this tool: https://github.com/scottyab/ssl-pin-generator
-        return "sha256/ZG+5y3w2mxstotmn15d9tnJtwss591+L6EH/yJMF41I=";
+        return null;//"sha256/ZG+5y3w2mxstotmn15d9tnJtwss591+L6EH/yJMF41I=";
     }
 
     @Override
     public Integer getSiteId() {
-        return 1;
+        return 2;
     }
 
     @Override

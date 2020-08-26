@@ -6,5 +6,6 @@
     <string name="track_screen_vew_button_label">Track Screen View</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_threshold">ThresholdActivity</string>
+    <string name="send_measurements">Send Measurements</string>
 
 </resources>

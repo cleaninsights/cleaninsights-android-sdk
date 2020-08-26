@@ -131,7 +131,8 @@ public class CleanInsights {
         Timber.plant(new Timber.DebugTree());
 
         // When working on an app we don't want to skew tracking results.
-        app.getPiwik().setDryRun(BuildConfig.DEBUG);
+        app.getPiwik().setDryRun(false);
+        app.getPiwik().setOptOut(false);
 
         // Track this app install, this will only trigger once per app version.
         // i.e. "http://com.piwik.demo:1/185DECB5CFE28FDB2F45887022D668B4"

@@ -128,12 +128,7 @@ makeJar.dependsOn(clearJar, build)
 /**
  * Coverage
  */
-apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
-
-jacoco {
-    toolVersion = "0.7.1.201405082137"
-}
 
 buildscript {
     repositories {
@@ -145,24 +140,6 @@ buildscript {
     }
 }
 
-task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-    classDirectories = fileTree(
-            dir: './build/intermediates/classes/debug',
-            excludes: ['org/piwik/R*.class',
-                       '**/BuildConfig.class',
-                       '**/*$InjectAdapter.class',
-                       '**/*$ModuleAdapter.class',
-                       '**/*$ViewInjector*.class'
-            ])
-    sourceDirectories = files([
-            'src/main/java',
-    ])
-    executionData = files('build/jacoco/testDebugUnitTest.exec')
-}
 
 coveralls {
     jacocoReportPath = 'build/reports/jacoco/jacocoTestReport/jacocoTestReport.xml'

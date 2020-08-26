@@ -269,10 +269,15 @@ public class Dispatcher {
                         .certificatePinner(certificatePinner)
                         .build();
             }
-            else
+            else if (mProxy != null)
             {
                 client = new OkHttpClient.Builder()
                         .proxy(mProxy)
+                        .build();
+            }
+            else
+            {
+                client = new OkHttpClient.Builder()
                         .build();
             }
 

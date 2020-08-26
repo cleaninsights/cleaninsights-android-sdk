@@ -61,7 +61,7 @@ public class DemoActivity extends AppCompatActivity {
 
                     //this is typical event tracked, but shared with the server in a secure, non-unique identified manner
                     MeasureHelper.track()
-                            .screen("/vote/cat/like/" + imgIdx)
+                            .screen("/vote/cat/like")
                             .title("Vote")
                             .variable(1, "option", imgIdx + "")
                             .with(getMeasurer());
@@ -72,7 +72,7 @@ public class DemoActivity extends AppCompatActivity {
 
                     //this is typical event tracked, but shared with the server in a secure, non-unique identified manner
                     MeasureHelper.track()
-                            .screen("/vote/cat/dislike" + imgIdx)
+                            .screen("/vote/cat/dislike")
                             .title("Vote")
                             .variable(1, "option", imgIdx + "")
                             .with(getMeasurer());
@@ -90,7 +90,7 @@ public class DemoActivity extends AppCompatActivity {
         new ConsentUI().showConsentDialog(this, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getMeasurer().setApplicationDomain("metrics.cleaninsights.org");
+                getMeasurer().setApplicationDomain("https://cleaninsights.org");
 
                 Toast.makeText(DemoActivity.this,"Thanks.... more soon!",Toast.LENGTH_LONG).show();
             }
@@ -122,6 +122,9 @@ public class DemoActivity extends AppCompatActivity {
             startActivity(intent);
             return true;
         }
+        else if (id == R.id.action_send_measurements) {
+            submitMeasurements();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -129,9 +132,17 @@ public class DemoActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
+        submitMeasurements();
+    }
+
+    private void submitMeasurements () {
+
+
         //when the app pauses do a private, randomized-response based tracking of the number of likes
         MeasureHelper.track().privateEvent("Vote", "Like per Session", Integer.valueOf(mLikeCount).floatValue(), getMeasurer())
                 .with(getMeasurer());
+
+        MeasureHelper.track().screen("/settings").title("Settings Entered").variable(1,"hello","world").with(getMeasurer());
 
         //dispatch the current set of events to the server
         ((CleanInsightsApplication)getApplication()).getMeasurer().dispatch();
